@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Raising an Agent, Season 2: orbs, jellyware and the company of the future &mdash; Thorsten Ball, mapped</title>
+<meta name="description" content="All eight episodes of Raising an Agent Season 2 (July to November 2026), in which Quinn Slack and Thorsten Ball argue that the local dev environment is dead, that agents should ship and run production, that code review is a bottleneck, and that a 21-person team without RFCs or quarterly goals is what the company of the future looks like." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../paper.css" />
+</head>
+<body>
+<header class="bar"><div class="bar-in">
+  <div class="brand"><span class="dot"></span>THORSTEN&nbsp;//&nbsp;FIELD&nbsp;MAP</div>
+  <a class="back" href="../index.html#podcast">&larr; the map</a>
+</div></header>
+<main>
+  <div class="eyebrow"><span class="box bb mono">RAISING AN AGENT &middot; PAGE 07 OF 10</span><span class="mono">season 2 &middot; 8 episodes &middot; jul&ndash;nov 2026</span></div>
+  <h1>Raising an Agent, Season 2: orbs, jellyware and the company of the future</h1>
+  <div class="authors">Eight conversations between Quinn Slack and Thorsten Ball, from &ldquo;the local dev env is dead&rdquo; in July to &ldquo;features are meaningless now&rdquo; in November.</div>
+  <div class="paperlink" style="border-left-color:var(--def)"><span class="lbl">Source</span><a href="https://ampcode.com/podcast" target="_blank" rel="noopener">Raising an Agent on ampcode.com &#8599;</a></div>
+  <div class="tldr"><b>TL;DR &mdash;</b> Season 1 was about the coding agent. Season 2 is about what comes after it. Amp rebuilt itself around remote agents that run in disposable cloud machines called orbs, and the hosts spend eight episodes working out what that does to everything around the code. Their answers: local development stops mattering, the agent should prove its work and then ship, watch and fix it in production, mandatory code review slows things down without making them safer, and a small team with no departments, RFCs or quarterly goals can, they claim, match competitors with thirty times the staff. The season ends on the hardest version of the claim, that when features can be dictated into existence a feature list is no longer a reason to buy software.</div>
+
+  <p class="lead">The episodes are long, loose and full of shop talk about Amp. This page reads them as one argument and pins each step of it to the minute where it is made.</p>
+
+  <h2 id="between">What changed between seasons</h2>
+  <p>Season 1 ran ten episodes from March 2025 to February 2026 (dates from the <a class="lnk" href="https://ampcode.com/podcast" target="_blank" rel="noopener">podcast feed</a>). Then the Amp team went heads-down. On 19 February 2026 they published <a class="lnk" href="https://ampcode.com/news/the-coding-agent-is-dead" target="_blank" rel="noopener">The Coding Agent Is Dead</a>, which said the agent in the editor sidebar was finished and killed Amp's VS Code and Cursor extensions. On 6 May came <a class="lnk" href="https://ampcode.com/news/neo" target="_blank" rel="noopener">a rebuilt CLI, codename Neo</a>, on a new architecture that can be remote-controlled from the web and manages its own context. On 30 June came <a class="lnk" href="https://ampcode.com/news/agents-in-orbs" target="_blank" rel="noopener">Agents in Orbs</a>. Season 2 opened on 17 July, less than three weeks after orbs shipped, and the hosts had been living in them since.</p>
+  <p>The vocabulary is Amp's own, and it piles up fast. Here is each term once, defined only as far as a written source or a clear passage in an episode supports.</p>
+  <div class="scroll"><table class="kv">
+    <thead><tr><th>Term</th><th>What it is</th><th>Source</th></tr></thead>
+    <tbody>
+    <tr><td>Orb</td><td>A remote machine Amp starts for each new thread. Your repo is cloned onto it and the agent runs there. It sleeps when the agent is idle and costs nothing while asleep. A repo can ship an <span class="mono">.agents/setup</span> script, which runs once before the orb is snapshotted, and an <span class="mono">.agents/resume</span> script, which runs on every wake-up.</td><td><a class="lnk" href="https://ampcode.com/notes/orbs-explained" target="_blank" rel="noopener">Orbs, Explained</a>; <a class="lnk" href="https://ampcode.com/notes/putting-an-agent-in-an-orb" target="_blank" rel="noopener">Putting an Agent in an Orb</a></td></tr>
+    <tr><td>Portal</td><td>A URL into anything on an orb that listens on a port and speaks HTTP. You can share it with teammates and annotate it.</td><td><a class="lnk" href="https://ampcode.com/news/portals" target="_blank" rel="noopener">Portals into Orbs</a>, 6 Aug 2026</td></tr>
+    <tr><td>Runner</td><td>An Amp agent process on a machine you own, such as a Raspberry Pi, a Mac or a machine with special hardware attached. Threads can be started on it remotely.</td><td><a class="lnk" href="https://youtu.be/3v7dIHh15dk?t=2311" target="_blank" rel="noopener">S2E5, 38:31</a>; <a class="lnk" href="https://ampcode.com/news/boxes" target="_blank" rel="noopener">Boxes</a></td></tr>
+    <tr><td>Puck</td><td>Amp's meta-agent: an assistant that starts, finds and archives your other agents for you.</td><td><a class="lnk" href="https://ampcode.com/news/meet-puck" target="_blank" rel="noopener">Meet Puck</a>, 20 Jul 2026</td></tr>
+    <tr><td>Self-hosted orbs</td><td>You run <span class="mono">amp orb provider</span> on your own infrastructure. It waits for Amp to ask it to spawn, pause or delete an orb, and passes each request to a program you write.</td><td><a class="lnk" href="https://ampcode.com/news/self-hosted-orbs" target="_blank" rel="noopener">Self-Hosted Orbs</a>, 22 Oct 2026</td></tr>
+    <tr><td>macOS Satellite</td><td>A cloud Mac that a Linux orb boots when the work needs Xcode or a simulator. The thread stays on the orb and the Mac only builds, runs and tests. It replaced Morbs, an earlier attempt to run the whole thread on a Mac.</td><td><a class="lnk" href="https://ampcode.com/news/macos-satellites" target="_blank" rel="noopener">macOS Satellites</a>, 29 Oct 2026</td></tr>
+    <tr><td>Space</td><td>A conversation with one agent whose job is to spawn and coordinate other agents, so you stop arranging threads by hand.</td><td><a class="lnk" href="https://ampcode.com/news/spaces" target="_blank" rel="noopener">Spaces</a>, 6 Nov 2026</td></tr>
+    <tr><td>Box</td><td>An always-on VM that you deploy the things you built in orbs to, with no containers and with an agent running on it. The smallest is $18 per 30 days.</td><td><a class="lnk" href="https://ampcode.com/news/boxes" target="_blank" rel="noopener">Boxes</a>, 10 Nov 2026</td></tr>
+    <tr><td>Jellyware</td><td>The team's name for software that is softer than software: built to a high bar and changed by asking an agent, with little need for admin screens or configuration.</td><td><a class="lnk" href="https://youtu.be/FfCCEZ00RFw?t=2348" target="_blank" rel="noopener">S2E2, 39:08</a>; <a class="lnk" href="https://registerspill.thorstenball.com/p/joy-and-curiosity-99" target="_blank" rel="noopener">Joy &amp; Curiosity #99</a></td></tr>
+    <tr><td>The two Amps</td><td>The product customers use, and the version the team uses internally, which they can change the same morning they think of a change.</td><td><a class="lnk" href="https://youtu.be/SI3N8MCQHfo?t=1997" target="_blank" rel="noopener">S2E3, 33:17</a></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="s2e1">S2E1 &middot; The Local Dev Env is Dead</h2>
+  <p class="mono">Released 17 Jul 2026 &middot; 48:31 &middot; <a class="lnk" href="https://ampcode.com/podcast/season-02/episode-01" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/Kpg_D5MUWnE" target="_blank" rel="noopener">YouTube</a></p>
+  <p>The opener compares the moment to 2025, when agents first got to spend tokens freely: this time the shift is from one agent on a laptop to many agents in isolated machines. The evidence is mostly small. A screenshot of a misbehaving tooltip goes into a new orb thread, and after a customer call the fix is waiting with its own verification, for about the effort of filing a ticket. The hosts say most competitors treat cloud agents as event-driven helpers for pull requests, while Amp treats them as the next generation of the product. With a clean, standardised machine per agent, re-running CI on a feature branch starts to look redundant. They concede limits: some credentials, production database access above all, could not yet go safely into an orb.</p>
+  <ul class="outline">
+    <li><a href="https://youtu.be/Kpg_D5MUWnE?t=120" target="_blank" rel="noopener">02:00</a> Recap: the sidebar agent is dead</li>
+    <li><a href="https://youtu.be/Kpg_D5MUWnE?t=212" target="_blank" rel="noopener">03:32</a> Neo: compaction, remote control, plugins</li>
+    <li><a href="https://youtu.be/Kpg_D5MUWnE?t=346" target="_blank" rel="noopener">05:46</a> Killing handoff, a feature people loved</li>
+    <li><a href="https://youtu.be/Kpg_D5MUWnE?t=614" target="_blank" rel="noopener">10:14</a> One thread, one fresh orb</li>
+    <li><a href="https://youtu.be/Kpg_D5MUWnE?t=933" target="_blank" rel="noopener">15:33</a> The tooltip bug: screenshot in, fix out</li>
+    <li><a href="https://youtu.be/Kpg_D5MUWnE?t=1128" target="_blank" rel="noopener">18:48</a> Cloud agents are more than a smarter Dependabot</li>
+    <li><a href="https://youtu.be/Kpg_D5MUWnE?t=1728" target="_blank" rel="noopener">28:48</a> Why run CI again after a clean sandbox?</li>
+    <li><a href="https://youtu.be/Kpg_D5MUWnE?t=2295" target="_blank" rel="noopener">38:15</a> Setup and resume scripts for elaborate dev envs</li>
+  </ul>
+
+  <h2 id="s2e2">S2E2 &middot; Orbs and Jellyware</h2>
+  <p class="mono">Released 11 Aug 2026 &middot; 55:17 &middot; <a class="lnk" href="https://ampcode.com/podcast/season-02/episode-02" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/FfCCEZ00RFw" target="_blank" rel="noopener">YouTube</a></p>
+  <p>Recorded in person in Munich during a team week. Several engineers had resisted orbs, and within about four weeks everyone had switched without being told to; when the team's laptops were wiped, people did not bother restoring their dotfiles. The explanation they give is friction: even a 1% cost to starting a parallel checkout suppresses work, a point Thorsten also makes in his note <a class="lnk" href="https://ampcode.com/notes/what-i-want-to-tell-you-about-orbs" target="_blank" rel="noopener">What I Want to Tell You About Orbs</a>. An agent that ties up no laptop can be asked for exhaustive proof (a test matrix, a demo video, frame-by-frame checks of an animation), which Thorsten links to his 2024 post <a class="lnk" href="https://registerspill.thorstenball.com/p/the-basics" target="_blank" rel="noopener">The Basics</a> and its rule to test manually and record it. The episode then names jellyware and draws a conclusion about bugs: when a fix takes minutes, a team can take more risk, and a zero-bug target just means shipping too slowly. The hedges: Quinn still opens diffs to look for red flags, and Thorsten spent two months early in the year going over the core of the codebase up close so that agents had a solid base to build on.</p>
+  <ul class="outline">
+    <li><a href="https://youtu.be/FfCCEZ00RFw?t=384" target="_blank" rel="noopener">06:24</a> Laptops wiped, dotfiles never restored</li>
+    <li><a href="https://youtu.be/FfCCEZ00RFw?t=415" target="_blank" rel="noopener">06:55</a> Read-only credentials in an orb beat a laptop</li>
+    <li><a href="https://youtu.be/FfCCEZ00RFw?t=661" target="_blank" rel="noopener">11:01</a> Zero friction versus one percent</li>
+    <li><a href="https://youtu.be/FfCCEZ00RFw?t=815" target="_blank" rel="noopener">13:35</a> Asking an agent for 100% proof</li>
+    <li><a href="https://youtu.be/FfCCEZ00RFw?t=1162" target="_blank" rel="noopener">19:22</a> Warning logs as a tracer bullet</li>
+    <li><a href="https://youtu.be/FfCCEZ00RFw?t=2071" target="_blank" rel="noopener">34:31</a> Getting the foundations right first</li>
+    <li><a href="https://youtu.be/FfCCEZ00RFw?t=2348" target="_blank" rel="noopener">39:08</a> Jellyware</li>
+    <li><a href="https://youtu.be/FfCCEZ00RFw?t=2538" target="_blank" rel="noopener">42:18</a> Zero bugs means you are moving too slowly</li>
+  </ul>
+
+  <h2 id="s2e3">S2E3 &middot; When Tokens Flow Like Electricity</h2>
+  <p class="mono">Released 27 Aug 2026 &middot; 48:02 &middot; <a class="lnk" href="https://ampcode.com/podcast/season-02/episode-03" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/SI3N8MCQHfo" target="_blank" rel="noopener">YouTube</a></p>
+  <p>Thorsten opens with predictions: intelligence keeps getting cheaper and faster, and counting tokens will soon look like counting watts.</p>
+  <blockquote class="q">It's like electricity. You're not measuring the watts coming out of your wall.<span class="cite">&mdash; <a href="https://youtu.be/SI3N8MCQHfo?t=227" target="_blank" rel="noopener">Thorsten Ball, Raising an Agent S2E3, 03:47</a></span></blockquote>
+  <p>Most of the episode is build versus buy, and Quinn presses on an apparent contradiction: Amp says orbs cannot be replaced by EC2, a VPN and tmux, yet Thorsten one-shotted a bug tracker in place of Linear. Thorsten's answer is that issue workflows differ in every company, while the orb product rests on design decisions above the code, such as a fresh orb for every thread. Quinn's answer is about where time goes: once the agent is where you work, the tool it displaced is low-value and you only need the 10% of it you still use. Both hedge in the same place, since a one-off tool needs a solid core under it, and the episode ends on paying for software made by someone whose judgment you trust.</p>
+  <ul class="outline">
+    <li><a href="https://youtu.be/SI3N8MCQHfo?t=227" target="_blank" rel="noopener">03:47</a> Tokens like electricity</li>
+    <li><a href="https://youtu.be/SI3N8MCQHfo?t=386" target="_blank" rel="noopener">06:26</a> Do X; don't build software to do X</li>
+    <li><a href="https://youtu.be/SI3N8MCQHfo?t=833" target="_blank" rel="noopener">13:53</a> A fresh orb per thread was controversial</li>
+    <li><a href="https://youtu.be/SI3N8MCQHfo?t=1056" target="_blank" rel="noopener">17:36</a> Models as weight on the build-vs-buy scale</li>
+    <li><a href="https://youtu.be/SI3N8MCQHfo?t=1241" target="_blank" rel="noopener">20:41</a> If Amp is worth buying, why isn't Linear?</li>
+    <li><a href="https://youtu.be/SI3N8MCQHfo?t=1934" target="_blank" rel="noopener">32:14</a> Glue code is the worst part</li>
+    <li><a href="https://youtu.be/SI3N8MCQHfo?t=1997" target="_blank" rel="noopener">33:17</a> The two Amps</li>
+    <li><a href="https://youtu.be/SI3N8MCQHfo?t=2119" target="_blank" rel="noopener">35:19</a> Homeowners and renters</li>
+  </ul>
+
+  <h2 id="s2e4">S2E4 &middot; What Is the Computer For Now?</h2>
+  <p class="mono">Released 11 Sep 2026 &middot; 53:18 &middot; <a class="lnk" href="https://ampcode.com/podcast/season-02/episode-04" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/7pstrDQ4xLs" target="_blank" rel="noopener">YouTube</a></p>
+  <p>Here a bug fix no longer ends at push: the agent watches the deploy, emails the user who reported the bug once the fix is live, searches the logs for others who hit it, and keeps watching the feature. Thorsten describes cheap evals, in which one orb spawns others with tasks that touch a new production-testing tool without mentioning it, then checks whether they used it. Quinn addresses the recent outages; Thorsten had sorted the 18 to 20 incidents of the previous six weeks into upstream providers, scaling infrastructure and shipped broken code, and the hosts put push-to-main at about a third by count and far less by downtime (their figures). Their stance is to go as fast as possible right up to the point where things break, accepting that calibrating sometimes means crossing it. The last third asks what a personal computer is still for.</p>
+  <blockquote class="q">I'm no longer just skeptical of local development. I'm now wondering, what is the role of the computer as a personal device in the future?<span class="cite">&mdash; <a href="https://youtu.be/7pstrDQ4xLs?t=2418" target="_blank" rel="noopener">Thorsten Ball, Raising an Agent S2E4, 40:18</a></span></blockquote>
+  <ul class="outline">
+    <li><a href="https://youtu.be/7pstrDQ4xLs?t=217" target="_blank" rel="noopener">03:37</a> One prompt, three projects, two hours</li>
+    <li><a href="https://youtu.be/7pstrDQ4xLs?t=339" target="_blank" rel="noopener">05:39</a> Push, watch the deploy, email the user</li>
+    <li><a href="https://youtu.be/7pstrDQ4xLs?t=615" target="_blank" rel="noopener">10:15</a> Mini evals for system-prompt changes</li>
+    <li><a href="https://youtu.be/7pstrDQ4xLs?t=769" target="_blank" rel="noopener">12:49</a> Local dev decays once nobody maintains it</li>
+    <li><a href="https://youtu.be/7pstrDQ4xLs?t=962" target="_blank" rel="noopener">16:02</a> Orbs that test whether other orbs use a new tool</li>
+    <li><a href="https://youtu.be/7pstrDQ4xLs?t=1247" target="_blank" rel="noopener">20:47</a> Six weeks of incidents, in three buckets</li>
+    <li><a href="https://youtu.be/7pstrDQ4xLs?t=1976" target="_blank" rel="noopener">32:56</a> Noisy logs mislead agents during incidents</li>
+    <li><a href="https://youtu.be/7pstrDQ4xLs?t=2418" target="_blank" rel="noopener">40:18</a> What is the computer for?</li>
+  </ul>
+
+  <h2 id="s2e5">S2E5 &middot; Stop Boxing In Your Agent</h2>
+  <p class="mono">Released 25 Sep 2026 &middot; 56:27 &middot; <a class="lnk" href="https://ampcode.com/podcast/season-02/episode-05" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/3v7dIHh15dk" target="_blank" rel="noopener">YouTube</a></p>
+  <p>A late-night &ldquo;Hot Take Thursday&rdquo; answering <a class="lnk" href="https://thorstenball.com/blog/2026/09/19/what-i-believe-about-the-future-of-software-development/" target="_blank" rel="noopener">What I believe about the future of software development</a>, a list first posted on X and put on his blog on 19 September. The episode opens with a relative's consultancy that capped engineers at &euro;50 of tokens a week and then moved them to a cheaper model; Thorsten's objection is arithmetic, because if output is wrong one time in ten, someone has to find which time. He repeats the post's line that some people will be priced out of frontier software development, as a prediction he dislikes, and compares it to the cost of home computers in the 1980s. The title comes from the middle: agents went vertical through the stack first, the next step is horizontal across the whole lifecycle, and approval chains, scattered repos and mandatory review are the walls in the way. He explains runners as a bridge for hardware, GPUs and Macs, and closes with the hot take he left out of the post: that so many engineers turned out conservative, as if they had never read how Java or JavaScript were first received.</p>
+  <blockquote class="q">Don't wait for your agent. You're wasting time. Let them wait for you.<span class="cite">&mdash; <a href="https://youtu.be/3v7dIHh15dk?t=1903" target="_blank" rel="noopener">Thorsten Ball, Raising an Agent S2E5, 31:43</a></span></blockquote>
+  <ul class="outline">
+    <li><a href="https://youtu.be/3v7dIHh15dk?t=222" target="_blank" rel="noopener">03:42</a> A &euro;50-a-week token budget</li>
+    <li><a href="https://youtu.be/3v7dIHh15dk?t=448" target="_blank" rel="noopener">07:28</a> Dial-up versus fiber</li>
+    <li><a href="https://youtu.be/3v7dIHh15dk?t=635" target="_blank" rel="noopener">10:35</a> &ldquo;Priced out&rdquo;: the line from the post</li>
+    <li><a href="https://youtu.be/3v7dIHh15dk?t=858" target="_blank" rel="noopener">14:18</a> Disrupt yourself with a small team and unlimited tokens</li>
+    <li><a href="https://youtu.be/3v7dIHh15dk?t=1108" target="_blank" rel="noopener">18:28</a> From vertical to horizontal</li>
+    <li><a href="https://youtu.be/3v7dIHh15dk?t=1903" target="_blank" rel="noopener">31:43</a> Don't wait for your agent</li>
+    <li><a href="https://youtu.be/3v7dIHh15dk?t=2311" target="_blank" rel="noopener">38:31</a> Why Amp has runners too</li>
+    <li><a href="https://youtu.be/3v7dIHh15dk?t=2815" target="_blank" rel="noopener">46:55</a> The hot take left out of the post</li>
+  </ul>
+
+  <h2 id="s2e6">S2E6 &middot; The Company of the Future</h2>
+  <p class="mono">Released 20 Oct 2026 &middot; 1:10:50 &middot; <a class="lnk" href="https://ampcode.com/podcast/season-02/episode-06" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/deiLxNZH_DM" target="_blank" rel="noopener">YouTube</a></p>
+  <p>Recorded together in San Francisco, it answers the question they get asked most, how the team works; Thorsten later called it possibly the most important episode of the year (<a class="lnk" href="https://registerspill.thorstenball.com/p/joy-and-curiosity-103" target="_blank" rel="noopener">Joy &amp; Curiosity #103</a>). The setup is 21 people with no departments, executives or territory, and one scheduled meeting a week. Quality control works through visibility: a work-in-progress channel, feature flags turned on for the team first, two blunt feedback channels, and news posts written before the feature is built. Review goes through the agent (ask for proof, read the files it touched, look closely only at hot paths, tag a colleague into the thread), and there are no quarterly goals because a six-month plan does not survive the model releases. The &ldquo;Sunday post&rdquo; in the episode description is a message Thorsten sends to the team and is not public; his written account of the week is <a class="lnk" href="https://registerspill.thorstenball.com/p/joy-and-curiosity-106" target="_blank" rel="noopener">Joy &amp; Curiosity #106</a>, which adds the meeting's four sections (Leave, Talk, Shipping, News Posts) and the two-to-three-minute timer for silent writing.</p>
+  <figure class="fig wide"><div class="media">
+    <svg class="dg" viewBox="0 0 820 300" role="img" aria-label="A week at Amp as described in S2E6">
+      <title>A week at Amp: Sunday post, one Monday meeting, then open channels for the rest of the week</title>
+      <text class="t-dim" x="20" y="34" font-size="11">SUNDAY</text>
+      <text class="t-dim" x="225" y="34" font-size="11">MONDAY &#183; THE ONLY FIXED MEETING</text>
+      <rect class="box" x="20" y="44" width="180" height="70" rx="10"/>
+      <text class="t-ink" x="110" y="72" text-anchor="middle" font-size="14">Sunday post</text>
+      <text class="t-dim" x="110" y="92" text-anchor="middle" font-size="11">what matters most</text>
+      <text class="t-dim" x="110" y="106" text-anchor="middle" font-size="11">+ the week's numbers</text>
+      <rect class="box-def" x="225" y="44" width="180" height="70" rx="10"/>
+      <text class="t-ink" x="315" y="72" text-anchor="middle" font-size="14">one meeting, twice</text>
+      <text class="t-def" x="315" y="92" text-anchor="middle" font-size="11">Europe/Australia, then SF</text>
+      <text class="t-dim" x="315" y="106" text-anchor="middle" font-size="11">cameras on, one hour</text>
+      <rect class="box" x="430" y="44" width="180" height="70" rx="10"/>
+      <text class="t-ink" x="520" y="72" text-anchor="middle" font-size="14">talk priorities</text>
+      <text class="t-dim" x="520" y="92" text-anchor="middle" font-size="11">~45 min, anyone adds</text>
+      <text class="t-dim" x="520" y="106" text-anchor="middle" font-size="11">no quarterly theme</text>
+      <rect class="box-def" x="635" y="44" width="165" height="70" rx="10"/>
+      <text class="t-ink" x="717" y="72" text-anchor="middle" font-size="14">silent writing</text>
+      <text class="t-def" x="717" y="92" text-anchor="middle" font-size="11">my goals this week</text>
+      <text class="t-dim" x="717" y="106" text-anchor="middle" font-size="11">then read out loud</text>
+      <line class="ln" x1="200" y1="79" x2="224" y2="79"/><polygon class="ah" points="225,79 217,74 217,84"/>
+      <line class="ln" x1="405" y1="79" x2="429" y2="79"/><polygon class="ah" points="430,79 422,74 422,84"/>
+      <line class="ln" x1="610" y1="79" x2="634" y2="79"/><polygon class="ah" points="635,79 627,74 627,84"/>
+      <line class="ln" x1="717" y1="114" x2="717" y2="146"/>
+      <line class="ln" x1="717" y1="146" x2="90" y2="146"/>
+      <line class="ln" x1="90" y1="146" x2="90" y2="173"/><polygon class="ah" points="90,174 85,166 95,166"/>
+      <text class="t-off" x="104" y="166" font-size="11">REST OF THE WEEK &#183; EVERYONE ON THEIR OWN SCHEDULE</text>
+      <rect class="box" x="20" y="178" width="140" height="70" rx="10"/>
+      <text class="t-ink" x="90" y="206" text-anchor="middle" font-size="13">build</text>
+      <text class="t-dim" x="90" y="226" text-anchor="middle" font-size="10.5">do what gives</text>
+      <text class="t-dim" x="90" y="240" text-anchor="middle" font-size="10.5">you energy</text>
+      <rect class="box-off" x="180" y="178" width="140" height="70" rx="10"/>
+      <text class="t-ink" x="250" y="206" text-anchor="middle" font-size="13">work in progress</text>
+      <text class="t-off" x="250" y="226" text-anchor="middle" font-size="10.5">who is on what</text>
+      <text class="t-off" x="250" y="240" text-anchor="middle" font-size="10.5">asks for feedback</text>
+      <rect class="box-off" x="340" y="178" width="140" height="70" rx="10"/>
+      <text class="t-ink" x="410" y="206" text-anchor="middle" font-size="13">news post first</text>
+      <text class="t-off" x="410" y="226" text-anchor="middle" font-size="10.5">explain it before</text>
+      <text class="t-off" x="410" y="240" text-anchor="middle" font-size="10.5">you ship it</text>
+      <rect class="box-off" x="500" y="178" width="140" height="70" rx="10"/>
+      <text class="t-ink" x="570" y="206" text-anchor="middle" font-size="13">flag on for team</text>
+      <text class="t-off" x="570" y="226" text-anchor="middle" font-size="10.5">orb good &#183; orb bad</text>
+      <text class="t-off" x="570" y="240" text-anchor="middle" font-size="10.5">blunt feedback</text>
+      <rect class="box-def" x="660" y="178" width="140" height="70" rx="10"/>
+      <text class="t-ink" x="730" y="206" text-anchor="middle" font-size="13">shipped</text>
+      <text class="t-def" x="730" y="226" text-anchor="middle" font-size="10.5">launch, or a</text>
+      <text class="t-def" x="730" y="240" text-anchor="middle" font-size="10.5">removal, announced</text>
+      <line class="ln-off" x1="160" y1="213" x2="179" y2="213"/><polygon class="ah-off" points="180,213 172,208 172,218"/>
+      <line class="ln-off" x1="320" y1="213" x2="339" y2="213"/><polygon class="ah-off" points="340,213 332,208 332,218"/>
+      <line class="ln-off" x1="480" y1="213" x2="499" y2="213"/><polygon class="ah-off" points="500,213 492,208 492,218"/>
+      <line class="ln-off" x1="640" y1="213" x2="659" y2="213"/><polygon class="ah-off" points="660,213 652,208 652,218"/>
+      <text class="t-dim" x="410" y="280" text-anchor="middle" font-size="10.5">no PRs required &#183; push to main &#183; the agent can see the flags, the threads and who changed what</text>
+    </svg>
+  </div>
+  <figcaption>Our drawing of the week as the hosts describe it in <a class="lnk" href="https://youtu.be/deiLxNZH_DM?t=157" target="_blank" rel="noopener">S2E6 from 02:37</a>. The bottom row is not a fixed sequence. In the episode, the news post is sometimes requested weeks before a launch, and a flagged feature can be scrapped.</figcaption></figure>
+  <ul class="outline">
+    <li><a href="https://youtu.be/deiLxNZH_DM?t=187" target="_blank" rel="noopener">03:07</a> The Sunday post</li>
+    <li><a href="https://youtu.be/deiLxNZH_DM?t=467" target="_blank" rel="noopener">07:47</a> Writing down goals in silence</li>
+    <li><a href="https://youtu.be/deiLxNZH_DM?t=1209" target="_blank" rel="noopener">20:09</a> The work in progress channel</li>
+    <li><a href="https://youtu.be/deiLxNZH_DM?t=1361" target="_blank" rel="noopener">22:41</a> Write the news post first</li>
+    <li><a href="https://youtu.be/deiLxNZH_DM?t=1548" target="_blank" rel="noopener">25:48</a> orb good and orb bad</li>
+    <li><a href="https://youtu.be/deiLxNZH_DM?t=1948" target="_blank" rel="noopener">32:28</a> No quarterly goals</li>
+    <li><a href="https://youtu.be/deiLxNZH_DM?t=2694" target="_blank" rel="noopener">44:54</a> Push to main, deploy when green</li>
+    <li><a href="https://youtu.be/deiLxNZH_DM?t=3003" target="_blank" rel="noopener">50:03</a> Code review is what creates the risk</li>
+  </ul>
+
+  <h2 id="s2e7">S2E7 &middot; Culture Stops Slop</h2>
+  <p class="mono">Released 30 Oct 2026 &middot; 1:00:26 &middot; <a class="lnk" href="https://ampcode.com/podcast/season-02/episode-07" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/tEse6n4hEJQ" target="_blank" rel="noopener">YouTube</a></p>
+  <p>This one answers the reactions to S2E6 (Thorsten's summary is in <a class="lnk" href="https://registerspill.thorstenball.com/p/joy-and-curiosity-104" target="_blank" rel="noopener">Joy &amp; Curiosity #104</a>). Some listeners stopped doing PRs; others asked Amp to meet them where they are, which Thorsten says in 2026 means building something useless within six months. Two cases show architecture without RFCs: self-hosted orbs were reshaped on site with a customer whose security team refused inbound connections, settled in one Slack thread and documented through a news post that served as the design document, and macOS Satellites came out of a conversation at one table after Morbs proved slow and expensive. On slop, both hosts put the cause in incentives and ownership, and say a review gate fixes neither. Thorsten says he no longer reads unit tests for product code and that undoing an architectural wrong turn is now cheap, with a hedge for production data migrations and the story of one of his own column removals that caused errors during a rollout.</p>
+  <ul class="outline">
+    <li><a href="https://youtu.be/tEse6n4hEJQ?t=160" target="_blank" rel="noopener">02:40</a> Don't meet people where they are</li>
+    <li><a href="https://youtu.be/tEse6n4hEJQ?t=285" target="_blank" rel="noopener">04:45</a> Self-hosted orbs without an RFC</li>
+    <li><a href="https://youtu.be/tEse6n4hEJQ?t=637" target="_blank" rel="noopener">10:37</a> Spawn, pause, delete: adapters are cheap now</li>
+    <li><a href="https://youtu.be/tEse6n4hEJQ?t=1365" target="_blank" rel="noopener">22:45</a> Why Morbs lost to Satellites</li>
+    <li><a href="https://youtu.be/tEse6n4hEJQ?t=1779" target="_blank" rel="noopener">29:39</a> Culture stops slop</li>
+    <li><a href="https://youtu.be/tEse6n4hEJQ?t=2909" target="_blank" rel="noopener">48:29</a> Not looking at unit tests</li>
+    <li><a href="https://youtu.be/tEse6n4hEJQ?t=3412" target="_blank" rel="noopener">56:52</a> A migration that review might not have caught</li>
+    <li><a href="https://youtu.be/tEse6n4hEJQ?t=3535" target="_blank" rel="noopener">58:55</a> Tough luck: get the tokens</li>
+  </ul>
+
+  <h2 id="s2e8">S2E8 &middot; Features Are Meaningless Now</h2>
+  <p class="mono">Released 18 Nov 2026 &middot; 1:10:34 &middot; <a class="lnk" href="https://ampcode.com/podcast/season-02/episode-08" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/LAofDfe5s_Q" target="_blank" rel="noopener">YouTube</a></p>
+  <p>Two launches frame it, <a class="lnk" href="https://ampcode.com/news/spaces" target="_blank" rel="noopener">Spaces</a> and <a class="lnk" href="https://ampcode.com/news/boxes" target="_blank" rel="noopener">Boxes</a>. Asked what Spaces are for, the hosts give different answers (one wants focus, the other a coordinator so he stops relaying context between threads), and they defend shipping before they had worked it out because a model release can move the product's centre of gravity. From there comes the title: if anyone can add a feature quickly, a feature list stops being a reason to choose a product, and the competitor that matters is a customer who builds the 2% they need. Boxes extend jellyware to running software, a cheap computer whose agent edits the live database for you so that no admin screen is needed. The episode ends on a limit: several new features had conflicting permission rules, no agent would have stopped that, and the fix is a specification and coordination job they handed to one person to own end to end.</p>
+  <ul class="outline">
+    <li><a href="https://youtu.be/LAofDfe5s_Q?t=60" target="_blank" rel="noopener">01:00</a> Spaces as a way to stay focused</li>
+    <li><a href="https://youtu.be/LAofDfe5s_Q?t=366" target="_blank" rel="noopener">06:06</a> Shipping before they had it figured out</li>
+    <li><a href="https://youtu.be/LAofDfe5s_Q?t=952" target="_blank" rel="noopener">15:52</a> Dictating features into existence</li>
+    <li><a href="https://youtu.be/LAofDfe5s_Q?t=1135" target="_blank" rel="noopener">18:55</a> A sidebar that changed all day</li>
+    <li><a href="https://youtu.be/LAofDfe5s_Q?t=1746" target="_blank" rel="noopener">29:06</a> Breaking changes fixed by sending a prompt</li>
+    <li><a href="https://youtu.be/LAofDfe5s_Q?t=2328" target="_blank" rel="noopener">38:48</a> Boxes: always-on computers</li>
+    <li><a href="https://youtu.be/LAofDfe5s_Q?t=3459" target="_blank" rel="noopener">57:39</a> The permissions mess</li>
+    <li><a href="https://youtu.be/LAofDfe5s_Q?t=3976" target="_blank" rel="noopener">66:16</a> Kill the settings screen?</li>
+  </ul>
+
+  <h2 id="big-ideas">The big ideas of season 2</h2>
+
+  <h3 id="idea-local-dev">The local dev env is dead; parallel remote agents replace it</h3>
+  <p>The claim is narrower than it sounds. Nobody says local machines are useless. The point is that a local checkout carries just enough friction (ports, processes, dirty worktrees, a busy CPU) to stop you starting the tenth agent, and that once the friction reaches zero, people work differently (<a class="lnk" href="https://youtu.be/FfCCEZ00RFw?t=661" target="_blank" rel="noopener">S2E2, 11:01</a>). A second effect follows: local setups that nobody maintains decay quickly, so the switch locks itself in (<a class="lnk" href="https://youtu.be/7pstrDQ4xLs?t=769" target="_blank" rel="noopener">S2E4, 12:49</a>). The hedges are real. Some credentials could not go into orbs yet (<a class="lnk" href="https://youtu.be/Kpg_D5MUWnE?t=549" target="_blank" rel="noopener">S2E1, 09:09</a>). Hardware and Apple platforms needed runners and later Satellites, which Thorsten calls a bridge that complements orbs (<a class="lnk" href="https://youtu.be/3v7dIHh15dk?t=2601" target="_blank" rel="noopener">S2E5, 43:21</a>).</p>
+
+  <h3 id="idea-jellyware">Jellyware: high quality, changed by asking</h3>
+  <p>Jellyware sits between hand-crafted software and vibe coding. The bar for quality stays high, but you change the thing by talking to an agent. Thorsten's example is a school-festival shop app that came with an admin interface he would never use, because sending a new photo of the menu was faster (<a class="lnk" href="https://youtu.be/FfCCEZ00RFw?t=2413" target="_blank" rel="noopener">S2E2, 40:13</a>). He did the same with a browser router he built for $5 in tokens (<a class="lnk" href="https://registerspill.thorstenball.com/p/joy-and-curiosity-99" target="_blank" rel="noopener">Joy &amp; Curiosity #99</a>). The idea grows over the season. In S2E3 it describes how the team itself uses Amp (the two Amps, <a class="lnk" href="https://youtu.be/SI3N8MCQHfo?t=1997" target="_blank" rel="noopener">33:17</a>). In S2E8 Boxes are pitched as the way to give customers that same power over their own tools (<a class="lnk" href="https://youtu.be/LAofDfe5s_Q?t=2906" target="_blank" rel="noopener">48:26</a>, and <a class="lnk" href="https://registerspill.thorstenball.com/p/joy-and-curiosity-107" target="_blank" rel="noopener">Joy &amp; Curiosity #107</a>).</p>
+
+  <h3 id="idea-tokens">Tokens as electricity, and build versus buy</h3>
+  <p>If intelligence keeps getting cheaper, rationing tokens is a sign you are in the wrong job (<a class="lnk" href="https://youtu.be/SI3N8MCQHfo?t=321" target="_blank" rel="noopener">S2E3, 05:21</a>). The same premise drives the hard line in S2E7: you are judged on output, and complaining that others have more tokens is like complaining in 2003 that a rival had better internet (<a class="lnk" href="https://youtu.be/tEse6n4hEJQ?t=3567" target="_blank" rel="noopener">59:27</a>). Cheap tokens also tip build versus buy, though the line keeps moving because each model release shifts the weights (<a class="lnk" href="https://youtu.be/SI3N8MCQHfo?t=1056" target="_blank" rel="noopener">S2E3, 17:36</a>). Their resolution is to build the thin custom layer and buy the solid core: auth, payments and whatever is load-bearing and costs money to run (<a class="lnk" href="https://youtu.be/SI3N8MCQHfo?t=1872" target="_blank" rel="noopener">31:12</a>).</p>
+
+  <h3 id="idea-production">Agents that ship, monitor and fix production</h3>
+  <p>Season 1 celebrated agents that run the compiler and read the errors. Season 2 makes production the feedback loop (<a class="lnk" href="https://youtu.be/FfCCEZ00RFw?t=1290" target="_blank" rel="noopener">S2E2, 21:30</a>). The agent gets time-limited, read-only access to logs and a copy of part of the database. The hosts argue this is safer than a developer laptop with standing production access (<a class="lnk" href="https://youtu.be/deiLxNZH_DM?t=2848" target="_blank" rel="noopener">S2E6, 47:28</a>). Small Amp plugins let it look up a user, grant a feature flag or draft an email that a human approves (<a class="lnk" href="https://youtu.be/deiLxNZH_DM?t=3096" target="_blank" rel="noopener">51:36</a>). The incident review in S2E4 is the counterweight. Speed has a price, and making the system legible to an agent (quieter logs, the same graphs humans see) is still work in progress (<a class="lnk" href="https://youtu.be/7pstrDQ4xLs?t=2036" target="_blank" rel="noopener">33:56</a>).</p>
+
+  <h3 id="idea-review">No mandatory code review: proof and culture instead</h3>
+  <p>Thorsten's September list stated the position flatly:</p>
+  <blockquote class="q">Code review will die. I mean: it’s already dead.<span class="cite">&mdash; <a href="https://thorstenball.com/blog/2026/09/19/what-i-believe-about-the-future-of-software-development/" target="_blank" rel="noopener">Thorsten Ball, What I believe about the future of software development</a></span></blockquote>
+  <p>Two things replace it in the episodes. The first is proof: an agent with a machine to itself can show videos, screenshots and a test matrix, and a reviewer who starts from that reads the diff differently (<a class="lnk" href="https://youtu.be/deiLxNZH_DM?t=2164" target="_blank" rel="noopener">S2E6, 36:04</a>). The second is trunk-based development with small changes behind flags. Quinn argues that a queue of unmerged branches is the actual source of risk (<a class="lnk" href="https://youtu.be/deiLxNZH_DM?t=3003" target="_blank" rel="noopener">50:03</a>). What keeps slop off main is culture: people own what they ship, talk to the customers who use it, and get called out in a channel everyone reads (<a class="lnk" href="https://youtu.be/tEse6n4hEJQ?t=1878" target="_blank" rel="noopener">S2E7, 31:18</a>). Quinn adds the economist's point that review's costs go unseen while the bugs it catches are visible (<a class="lnk" href="https://youtu.be/tEse6n4hEJQ?t=3472" target="_blank" rel="noopener">57:52</a>). The concession is there too: Quinn still opens diffs to look for red flags (<a class="lnk" href="https://youtu.be/FfCCEZ00RFw?t=1854" target="_blank" rel="noopener">S2E2, 30:54</a>).</p>
+
+  <h3 id="idea-team">How a team of 21 runs without RFCs or quarterly goals</h3>
+  <p>The hosts tie everything to the team's size. With no plans to hire, problems that a growing company would solve with headcount have to be solved with focus. Quinn compares it to a container ship, where you throw the least important cargo overboard first (<a class="lnk" href="https://youtu.be/tEse6n4hEJQ?t=2314" target="_blank" rel="noopener">S2E7, 38:34</a>). Agents make each person reach further, so the old team boundaries cause collisions. That is Quinn's image of fish in a pond after someone adds fertiliser (<a class="lnk" href="https://youtu.be/deiLxNZH_DM?t=3527" target="_blank" rel="noopener">S2E6, 58:47</a>). Their answer is to drop territory and record the intent in agent threads, so anyone can pick up anyone's work. They admit this shapes the product too. Amp spun out of Sourcegraph partly to get this structure (<a class="lnk" href="https://youtu.be/deiLxNZH_DM?t=3619" target="_blank" rel="noopener">60:19</a>), and they say they do not know how a 300-person company makes the transition (<a class="lnk" href="https://youtu.be/deiLxNZH_DM?t=3954" target="_blank" rel="noopener">65:54</a>). They also note that agent work can turn into busy-work juggling that crowds out the deep project (<a class="lnk" href="https://youtu.be/tEse6n4hEJQ?t=2250" target="_blank" rel="noopener">S2E7, 37:30</a>).</p>
+
+  <h3 id="idea-features">Features are meaningless now</h3>
+  <p>This is the season's endpoint, and it was set up in the first episode: when customers can change code, code becomes the most flexible settings screen there is (<a class="lnk" href="https://youtu.be/Kpg_D5MUWnE?t=2039" target="_blank" rel="noopener">S2E1, 33:59</a>). By S2E8 the claim covers all software. A feature matrix no longer separates you from competitors, because anyone can build the features. What separates you is the way of working you sell and the judgment of the people behind it (<a class="lnk" href="https://youtu.be/LAofDfe5s_Q?t=982" target="_blank" rel="noopener">16:22</a>). Quinn takes it furthest by asking whether Amp could drop its settings screen and let Puck handle configuration. Thorsten is visibly uneasy, because seeing the options is how you find out what exists (<a class="lnk" href="https://youtu.be/LAofDfe5s_Q?t=4101" target="_blank" rel="noopener">68:21</a>). The permissions mess from the same episode is the limit: specifying what the system should do is still human work.</p>
+
+  <div class="callout">Next: <a class="lnk" href="p08.html">The Monkey books</a> &middot; Back to <a class="lnk" href="../index.html#podcast">the map</a>.</div>
+</main>
+<footer>Original explanation of Thorsten Ball's public work, page 07 of 10. Summaries and framing are ours; quotes are his and link to the source. Part of <a href="../index.html">the Thorsten Ball field map</a>.</footer>
+<!-- Private comments mode, inert unless ?annotate=1 (see assets/annotate.js in idvorkin-ai-tools.github.io) -->
+<script src="https://idvorkin-ai-tools.github.io/assets/annotate.js" defer></script>
+</body>
+</html>
