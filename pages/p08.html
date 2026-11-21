@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Monkey books: Writing An Interpreter In Go and Writing A Compiler In Go &mdash; Thorsten Ball, mapped</title>
+<meta name="description" content="Thorsten Ball's two self-published books: what Monkey is, what each book builds chapter by chapter, the tests-first and no-libraries method, how they became standard recommendations, and what he says about them now that agents write the code." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../paper.css" />
+</head>
+<body>
+<header class="bar"><div class="bar-in">
+  <div class="brand"><span class="dot"></span>THORSTEN&nbsp;//&nbsp;FIELD&nbsp;MAP</div>
+  <a class="back" href="../index.html#books">&larr; the map</a>
+</div></header>
+<main>
+  <div class="eyebrow"><span class="box wb mono">THE MONKEY BOOKS &middot; PAGE 08 OF 10</span><span class="mono">lexer &middot; Pratt parser &middot; bytecode VM &middot; 2016&ndash;2018</span></div>
+  <h1>The Monkey books: Writing An Interpreter In Go and Writing A Compiler In Go</h1>
+  <div class="authors">Two self-published books, one invented language, and a codebase the reader builds from an empty file to a bytecode virtual machine.</div>
+  <div class="paperlink" style="border-left-color:var(--off)"><span class="lbl">Source</span><a href="https://interpreterbook.com/" target="_blank" rel="noopener">interpreterbook.com &#8599;</a>&nbsp;&middot;&nbsp;<a href="https://compilerbook.com/" target="_blank" rel="noopener">compilerbook.com &#8599;</a></div>
+  <div class="tldr"><b>TL;DR &mdash;</b> Thorsten wrote both books himself and sold them himself. <i>Writing An Interpreter In Go</i> (November 2016) starts from zero lines of code and ends with a working tree-walking interpreter for Monkey, a small C-like language he designed for the book. <i>Writing A Compiler In Go</i> (July 2018) keeps that lexer, parser and AST and replaces the evaluator with a bytecode compiler and a stack-based virtual machine, which the book's site says runs Monkey 3x faster. Both are written tests first, use only the Go standard library, and put working code at the centre of every page. Readers have since written nearly a hundred Monkey implementations in other languages. In 2026 he notes, with some amusement, that he wrote books built on TDD and no longer writes tests by hand.</div>
+
+  <p class="lead">Before Sourcegraph, Zed and Amp, many programmers knew Thorsten as the person who taught them how a programming language works. This page covers what the books contain, how he made them, and how he talks about them now.</p>
+
+  <h2 id="monkey">Monkey, the language that lives in books</h2>
+  <p>Monkey is a language he designed for the first book. The <a class="lnk" href="https://monkeylang.org/" target="_blank" rel="noopener">Monkey site</a> describes it as having no official implementation: it exists in the two books, and each reader builds it, first as an interpreter and then as a compiler plus virtual machine. It has C-like syntax, <span class="mono">let</span> bindings, integers, booleans, strings, arrays and hashes, prefix and infix operators, conditionals, implicit and explicit returns, first-class and higher-order functions, and closures.</p>
+  <p>The design is small on purpose. Each feature makes you build one recognisable piece of a real language implementation and nothing extra. Closures, for example, force you to deal with environments in the first book and free variables in the second. This is the example the <a class="lnk" href="https://compilerbook.com/" target="_blank" rel="noopener">compiler book's site</a> uses as its showpiece:</p>
+<pre class="code-block">// `newAdder` returns a closure that makes use of the free variables `a` and `b`:
+let newAdder = fn(a, b) {
+    fn(c) { a + b + c };
+};
+// This constructs a new `adder` function:
+let adder = newAdder(1, 2);
+adder(8); // =&gt; 11</pre>
+
+  <h2 id="pipeline">One front end, two back ends</h2>
+  <p>The two books share one codebase. Book one builds the whole pipeline. Book two keeps everything up to the syntax tree and puts a different engine behind it. The <a class="lnk" href="https://compilerbook.com/sample.pdf" target="_blank" rel="noopener">compiler book's sample chapter</a> sets the goal as getting the expression <span class="mono">1 + 2</span> through every stage: tokenize and parse it with the packages from the first book, compile the resulting AST to bytecode, and have the new virtual machine turn it into 3.</p>
+  <figure class="fig wide"><div class="media">
+    <svg class="dg" viewBox="0 0 820 340" role="img" aria-label="The Monkey pipeline across both books">
+      <title>Monkey source flows through a shared lexer, parser and AST, then either a tree-walking evaluator (book 1) or a compiler, bytecode and virtual machine (book 2)</title>
+      <text class="t-dim" x="20" y="24" font-size="11">SHARED FRONT END &#183; built in book 1, reused in book 2</text>
+      <rect class="box" x="20" y="36" width="220" height="44" rx="8"/>
+      <text class="t-ink" x="130" y="55" text-anchor="middle" font-size="13">source code</text>
+      <text class="t-dim" x="130" y="71" text-anchor="middle" font-size="10.5" font-family="IBM Plex Mono, monospace">let x = 5 + 5;</text>
+      <line class="ln" x1="130" y1="80" x2="130" y2="93"/><polygon class="ah" points="130,94 125,86 135,86"/>
+      <rect class="box" x="20" y="94" width="220" height="44" rx="8"/>
+      <text class="t-ink" x="130" y="113" text-anchor="middle" font-size="13">lexer</text>
+      <text class="t-dim" x="130" y="129" text-anchor="middle" font-size="10.5">ch. 1 &#183; characters into tokens</text>
+      <line class="ln" x1="130" y1="138" x2="130" y2="151"/><polygon class="ah" points="130,152 125,144 135,144"/>
+      <rect class="box" x="20" y="152" width="220" height="44" rx="8"/>
+      <text class="t-ink" x="130" y="171" text-anchor="middle" font-size="13">tokens</text>
+      <text class="t-dim" x="130" y="187" text-anchor="middle" font-size="10.5" font-family="IBM Plex Mono, monospace">LET IDENTIFIER INTEGER &#8230;</text>
+      <line class="ln" x1="130" y1="196" x2="130" y2="209"/><polygon class="ah" points="130,210 125,202 135,202"/>
+      <rect class="box" x="20" y="210" width="220" height="44" rx="8"/>
+      <text class="t-ink" x="130" y="229" text-anchor="middle" font-size="13">parser</text>
+      <text class="t-dim" x="130" y="245" text-anchor="middle" font-size="10.5">ch. 2 &#183; recursive descent + Pratt</text>
+      <line class="ln" x1="130" y1="254" x2="130" y2="267"/><polygon class="ah" points="130,268 125,260 135,260"/>
+      <rect class="box" x="20" y="268" width="220" height="44" rx="8"/>
+      <text class="t-ink" x="130" y="287" text-anchor="middle" font-size="13">AST</text>
+      <text class="t-dim" x="130" y="303" text-anchor="middle" font-size="10.5">a tree of statement + expression nodes</text>
+
+      <rect class="box" x="300" y="36" width="500" height="58" rx="8"/>
+      <text class="t-ink" x="550" y="58" text-anchor="middle" font-size="12">The Lost Chapter (2017, free)</text>
+      <text class="t-dim" x="550" y="78" text-anchor="middle" font-size="10.5">adds a macro-expansion phase that rewrites the AST before it is evaluated</text>
+
+      <text class="t-off" x="300" y="128" font-size="11">BOOK 1 &#183; WRITING AN INTERPRETER IN GO &#183; 2016</text>
+      <rect class="box-off" x="300" y="138" width="250" height="60" rx="8"/>
+      <text class="t-ink" x="425" y="162" text-anchor="middle" font-size="13">tree-walking evaluator</text>
+      <text class="t-off" x="425" y="182" text-anchor="middle" font-size="10.5">ch. 3&#8211;4 &#183; visits each node in turn</text>
+      <line class="ln-off" x1="550" y1="168" x2="589" y2="168"/><polygon class="ah-off" points="590,168 582,163 582,173"/>
+      <rect class="box-off" x="590" y="138" width="210" height="60" rx="8"/>
+      <text class="t-ink" x="695" y="162" text-anchor="middle" font-size="13">objects &#8594; REPL</text>
+      <text class="t-off" x="695" y="182" text-anchor="middle" font-size="10.5">environment, built-ins, output</text>
+
+      <text class="t-def" x="300" y="236" font-size="11">BOOK 2 &#183; WRITING A COMPILER IN GO &#183; 2018</text>
+      <rect class="box-def" x="300" y="260" width="150" height="60" rx="8"/>
+      <text class="t-ink" x="375" y="284" text-anchor="middle" font-size="13">compiler</text>
+      <text class="t-def" x="375" y="304" text-anchor="middle" font-size="10.5">emits instructions</text>
+      <line class="ln-def" x1="450" y1="290" x2="474" y2="290"/><polygon class="ah-def" points="475,290 467,285 467,295"/>
+      <rect class="box-def" x="475" y="260" width="150" height="60" rx="8"/>
+      <text class="t-ink" x="550" y="284" text-anchor="middle" font-size="13">bytecode</text>
+      <text class="t-def" x="550" y="304" text-anchor="middle" font-size="10.5">opcodes + operands</text>
+      <line class="ln-def" x1="625" y1="290" x2="649" y2="290"/><polygon class="ah-def" points="650,290 642,285 642,295"/>
+      <rect class="box-def" x="650" y="260" width="150" height="60" rx="8"/>
+      <text class="t-ink" x="725" y="284" text-anchor="middle" font-size="13">stack VM</text>
+      <text class="t-def" x="725" y="304" text-anchor="middle" font-size="10.5">frames, closures</text>
+
+      <line class="ln" x1="240" y1="290" x2="270" y2="290"/>
+      <line class="ln-def" x1="270" y1="290" x2="299" y2="290"/><polygon class="ah-def" points="300,290 292,285 292,295"/>
+      <line class="ln-off" x1="270" y1="290" x2="270" y2="168"/>
+      <line class="ln-off" x1="270" y1="168" x2="299" y2="168"/><polygon class="ah-off" points="300,168 292,163 292,173"/>
+    </svg>
+  </div>
+  <figcaption>Our drawing of the architecture both books describe. The left column and the amber row are book one; book two keeps the left column, the REPL and the object system and adds the blue row next to the evaluator. Chapter numbers are from the <a class="lnk" href="https://interpreterbook.com/toc.pdf" target="_blank" rel="noopener">book one table of contents</a>.</figcaption></figure>
+
+  <h2 id="book-one">Book one: from characters to a running interpreter</h2>
+  <p>The <a class="lnk" href="https://interpreterbook.com/toc.pdf" target="_blank" rel="noopener">table of contents</a> has four chapters, each one a layer of the pipeline.</p>
+  <ul class="outline">
+    <li><b>1 &middot; Lexing.</b> Define the token types, write a lexer that turns a string of characters into tokens, extend it with two-character operators, and finish with the start of a REPL that prints tokens. The <a class="lnk" href="https://interpreterbook.com/sample.pdf" target="_blank" rel="noopener">free sample</a> is the beginning of this chapter, and it is a fair test of whether the style suits you.</li>
+    <li><b>2 &middot; Parsing.</b> A section titled "Why not a parser generator?" explains why the parser is written by hand. Statements are parsed by recursive descent, and expressions by top-down operator precedence, also called Pratt parsing. A Pratt parser attaches a parsing function to each token type, one for when the token starts an expression and one for when it appears between two operands. A precedence table decides how tightly each operator binds. It is the longest chapter, and a section titled "How Pratt Parsing Works" walks through the mechanism. The chapter ends with a read-parse-print loop.</li>
+    <li><b>3 &middot; Evaluation.</b> A section on strategies of evaluation comes before the tree-walking interpreter itself. Then build an object system to represent values, then evaluate expressions, conditionals, return statements, errors, bindings in an environment, and functions with calls. Closures appear here, as a function value that holds on to the environment it was defined in. The last section, "Who's taking the trash out?", turns to memory.</li>
+    <li><b>4 &middot; Extending the Interpreter.</b> Strings, built-in functions such as <span class="mono">len</span>, arrays with index expressions, and hashes, each added through every layer from lexer to evaluator. That repetition is the point: by the fourth data type you know where each change goes.</li>
+  </ul>
+  <p>A short "Going Further" section points at the Lost Chapter and the sequel. The <a class="lnk" href="https://interpreterbook.com/" target="_blank" rel="noopener">book's site</a> now puts it at around 250 pages, most of them code. His <a class="lnk" href="https://thorstenball.com/blog/2016/11/30/why-i-wrote-a-book-about-interpreters/" target="_blank" rel="noopener">launch post</a> said around 200.</p>
+
+  <h2 id="book-two">Book two: bytecode, a stack machine and closures</h2>
+  <p>The sequel opens with an introduction called "Evolving Monkey", with sections on the language's past and present and on its future. Its <a class="lnk" href="https://compilerbook.com/toc.pdf" target="_blank" rel="noopener">table of contents</a> runs to ten chapters.</p>
+  <ul class="outline">
+    <li><b>1 &middot; Compilers &amp; Virtual Machines.</b> What a real machine does, what a virtual one is, why you would build one, what bytecode is, and the plan, in a section subtitled "the Duality of VM and Compiler": every feature gets a compiler half and a VM half, built side by side so there is always a running system.</li>
+    <li><b>2 &middot; Hello Bytecode!</b> Define opcodes and their operand encoding, build the smallest compiler, a mini disassembler, and a VM that can add two numbers. The sample explains the key choice: a stack machine, because it has fewer moving parts than a register machine and the book cares more about understanding than speed.</li>
+    <li><b>3&ndash;6.</b> Infix, prefix and comparison expressions; conditionals compiled to jump instructions (and the return of <span class="mono">null</span>); names, with a symbol table and globals in the VM; then strings, arrays, hashes and the index operator.</li>
+    <li><b>7 &middot; Functions.</b> Function literals and calls, local bindings, and arguments. This is where the VM gets frames with stack and frame pointers and the book defines a calling convention.</li>
+    <li><b>8 &middot; Built-in Functions.</b> The same built-ins as book one, moved into the VM.</li>
+    <li><b>9 &middot; Closures.</b> The site calls this the "crown-jewel". The chapter titles show the approach: "Everything's a closure", compiling and resolving free variables, creating closures at run time, and recursive closures. The site says it will show "why closure-compilation is so tricky". The difficulty is that a tree walker gets closures almost for free, because the evaluator already holds the environment. A compiler has to work out at compile time which variables a function captures and emit code that copies them into a closure object.</li>
+    <li><b>10 &middot; Taking Time.</b> The closing chapter.</li>
+  </ul>
+  <p>The speed claim reads like this: the result is "much closer to the programming languages we use every day" and "also 3x faster. And that's without explicitly aiming for performance." That sentence is from <a class="lnk" href="https://compilerbook.com/" target="_blank" rel="noopener">compilerbook.com</a>, which gives no further detail, so we do not either. The eBook is around 260 pages and the bundle of both is around 480.</p>
+
+  <h2 id="method">The method: tests first, standard library only, code on every page</h2>
+  <p>The sites list four promises: working code is the focus, the book is short, there are no third-party libraries, and everything is tested, "Sometimes in TDD style, sometimes with the tests written after." The <a class="lnk" href="https://thorstenball.com/books/" target="_blank" rel="noopener">books page</a> is blunter: "This book is not about theory, its focus is runnable, working code."</p>
+  <p>Each rule removes a reason to stop reading. A parser generator, or an existing library, would leave a box you cannot see into. Tests written before the code tell you what the next step is supposed to do, and a passing test tells you that you got there. Code in an appendix, or code that no longer compiles, would break the main promise that you can run every step. He describes the pain this caused him in <a class="lnk" href="https://thorstenball.com/blog/2018/09/04/the-tools-i-use-to-write-books/" target="_blank" rel="noopener">The Tools I Use To Write Books</a>. Every snippet lives twice, once in the Markdown chapter and once in the code folder, and is kept in sync by hand. He did this because no tool could show a change to an existing function the way he wanted. He ends with "two books and zero tools", and he counts that as a success.</p>
+  <p>Go was a deliberate choice. In 2024, eight years after the first release, he downloaded the original code and ran it:</p>
+  <blockquote class="q off">Code written in 2016 using Go 1.7, frozen in time — compiling and running today, using Go 1.23. No warnings, no errors.<span class="cite">&mdash; <a href="https://registerspill.thorstenball.com/p/glad-i-did-it-in-go" target="_blank" rel="noopener">Thorsten Ball, Glad I did it in Go (Register Spill, 2024)</a></span></blockquote>
+  <p>In that post he quotes the book's "Why Go?" section: no other tools beyond what Go ships, a formatter with no settings, a test framework built in, and code that should map closely to lower-level languages. The last point turned out to matter most. Readers who did not know Go translated the code into their own language as they read. Some of them told him they never typed out the Go version at all.</p>
+
+  <h2 id="origin">Why he wrote them, and how he shipped them</h2>
+  <p>He tells the origin story in <a class="lnk" href="https://thorstenball.com/blog/2016/11/30/why-i-wrote-a-book-about-interpreters/" target="_blank" rel="noopener">Why I Wrote a Book About Interpreters</a>. In 2015 he worked through SICP and was taken with its meta-circular evaluator, a Lisp interpreter in about 400 lines of Scheme. Then he noticed that it skips the parser. He dislikes skipping anything, and Steve Yegge's <a class="lnk" href="http://steve-yegge.blogspot.com/2007/06/rich-programmer-food.html" target="_blank" rel="noopener">Rich Programmer Food</a> had just told him to write a compiler. So he set out to build one with no compiler course and no computer science degree. What he found was either theory-heavy tomes or toy tutorials that hid the hard parts. The book was his answer: every component built by hand, with tests, readable by any programmer. When he <a class="lnk" href="https://registerspill.thorstenball.com/p/leaving-sourcegraph" target="_blank" rel="noopener">left Sourcegraph</a> in 2023 he called this full circle: Yegge's essay got him into compilers, compilers got him into language tooling, and that got him a job at Sourcegraph reporting to Yegge.</p>
+  <p>It took eleven months: four building Monkey, seven writing. <a class="lnk" href="https://thorstenball.com/blog/2017/01/16/what-i-didnt-do-to-write-a-book/" target="_blank" rel="noopener">What I didn't do to write a book</a> is a cheerful confession that he had no system. His to-do lists were scattered and his notes ended up wherever he was typing. The one constant was getting up at 5:45 every morning and moving the book forward, sometimes by a single sentence starting with "FIXME:".</p>
+  <p>The publishing side is in the tools post. He wrote the chapters in Markdown under git, ran them through pandoc with custom templates (LaTeX for the PDF) and used KindleGen for Mobi. In 2018 he sold the eBooks through Gumroad and printed paperbacks on demand through Amazon KDP. The sites now sell the eBooks through LemonSqueezy. The <a class="lnk" href="https://thorstenball.com/blog/2017/02/22/writing-an-interpreter-in-go-the-paperback-edition/" target="_blank" rel="noopener">paperback post</a> from February 2017 says the paperback was mostly reader demand, and that he would not print it until Monkey had a logo, so he ran a design contest for one.</p>
+
+  <h2 id="lost-chapter">The Lost Chapter: macros as a free fifth chapter</h2>
+  <p>A few months after the release he went back to Monkey and added a Lisp-style macro system, after Racket's macros caught his attention. He wrote it up as <a class="lnk" href="https://interpreterbook.com/lost/" target="_blank" rel="noopener">The Lost Chapter: A Macro System For Monkey</a>, published free in June 2017 and close to 50 pages as a PDF. It picks up where chapter four ends. <span class="mono">quote</span> and <span class="mono">unquote</span> let code handle syntax trees as values, and a separate macro-expansion phase rewrites the AST before evaluation. The <a class="lnk" href="https://interpreterbook.com/" target="_blank" rel="noopener">book site</a> compares it to Elixir's macro system and gives this example:</p>
+<pre class="code-block">let unless = macro(condition, consequence, alternative) {
+    quote(if (!(unquote(condition))) {
+        unquote(consequence);
+    } else {
+        unquote(alternative);
+    });
+};
+
+unless(10 &gt; 5, puts("not greater"), puts("greater"));
+// outputs only: "greater"</pre>
+  <p>His <a class="lnk" href="https://thorstenball.com/blog/2017/06/28/the-lost-chapter-a-macro-system-for-monkey/" target="_blank" rel="noopener">post about it</a> gives two reasons for keeping it out of the book. A paperback cannot be updated for people who already bought it. And macros felt to him less like Monkey canon than a "bizarro expansion pack". The same post says Monkey work had also produced "a project I'm not ready to talk about yet". The compiler book came out a year later; the post does not say that was the project.</p>
+
+  <h2 id="classics">How they became the standard recommendation</h2>
+  <table class="kv">
+    <tr><th>Writing An Interpreter In Go</th><td>1.0 on <a class="lnk" href="https://interpreterbook.com/changelog/" target="_blank" rel="noopener">23 November 2016</a>; current 1.7 (7 May 2020). Rated 4.6 on Amazon and Goodreads; translated into Japanese and Chinese, per <a class="lnk" href="https://interpreterbook.com/" target="_blank" rel="noopener">interpreterbook.com</a>.</td></tr>
+    <tr><th>Writing A Compiler In Go</th><td>1.0 on <a class="lnk" href="https://compilerbook.com/changelog/" target="_blank" rel="noopener">31 July 2018</a>; current 1.2 (7 May 2020). Rated 4.7; translated into Chinese, per <a class="lnk" href="https://compilerbook.com/" target="_blank" rel="noopener">compilerbook.com</a>.</td></tr>
+    <tr><th>Monkeys in the wild</th><td>"Nearly 100 Monkey implementations in more than 25 languages", per <a class="lnk" href="https://monkeylang.org/#monkeys-in-the-wild" target="_blank" rel="noopener">monkeylang.org</a>.</td></tr>
+  </table>
+  <p>Three things put the books on every list of where to start with interpreters. They filled the gap he describes in his launch post, between the 50-line Lisp blog post and the Dragon Book, and you finish with a language you wrote yourself. The endorsements on the sites come from people in the field. Mitchell Hashimoto recommends the first book to any engineer who does not know lexers, parsers and evaluators. Bob Nystrom, author of <i>Crafting Interpreters</i>, says it gets you to a working interpreter with less prose than his own book. And Monkey became an exercise that outlives the books. Several reviewers on the sites say it is the project they build whenever they learn a new language, because it needs only a standard library and the test suite tells them when they are done.</p>
+  <p>Seven years on, the project still stands out for him. In <a class="lnk" href="https://registerspill.thorstenball.com/p/nothing-in-my-way-except-myself" target="_blank" rel="noopener">Nothing in my way except myself</a> (2023) he says the Monkey interpreter "was the most joy-inducing programming I had ever done". His leaving-Sourcegraph post mentions job candidates leaving the video frame and returning with one of his books. In 2024 he took apart <a class="lnk" href="https://registerspill.thorstenball.com/p/exploring-the-c4-compiler" target="_blank" rel="noopener">c4</a>, a C compiler in four functions, and was delighted to find it is a bytecode compiler and VM, the same architecture as his second book.</p>
+
+  <h2 id="agents">Why they matter now that agents write the code</h2>
+  <p>He links the books to the agent era himself, and the link is uncomfortable for him. Looking at what changed between his first ten years as a programmer and the last two, he lists TDD among the casualties:</p>
+  <blockquote class="q">I wrote books that use TDD! I loved TDD! And yet at some point in the last 2 years I wrote my last test by hand<span class="cite">&mdash; <a href="https://registerspill.thorstenball.com/p/joy-and-curiosity-96" target="_blank" rel="noopener">Thorsten Ball, Joy &amp; Curiosity #96 (August 2026)</a></span></blockquote>
+  <p>In the same issue he notes that "AI and agents could be super compilers". On the podcast in April 2025, a co-host <a class="lnk" href="https://youtu.be/2ITBH4dIfWY?t=1355" target="_blank" rel="noopener">reminds him</a> that he wrote books about how to write code that writes code. He says that is why he couldn't sleep the night before: he was drafting a post called There's Beauty in AI in his head, along with the disclaimer it would need so readers would not take him for a hype merchant. The disclaimer was that he has written books about code and written compilers, and:</p>
+  <blockquote class="q">I truly care about code. That's the whole disclaimer.<span class="cite">&mdash; <a href="https://youtu.be/2ITBH4dIfWY?t=1417" target="_blank" rel="noopener">Raising an Agent, Season 1 Episode 4, 23:37</a></span></blockquote>
+  <p>The post came out about a month later as <a class="lnk" href="https://registerspill.thorstenball.com/p/theres-beauty-in-ai" target="_blank" rel="noopener">There's Beauty in AI</a>. It explains his earlier resistance in terms the books would recognise. Programming had always been black boxes he knew he could open, and LLMs at first looked like oracles he could not. What changed his mind was fine-tuning a model at Zed and watching the data move its behaviour. Once he could see some of the wiring, he started to enjoy it again.</p>
+  <p>Our reading of those two pieces: the habit the books teach, opening a system down to its parts, is the habit that eventually won him over to models. The method they model, tests as proof of each step, is the part he says he has stopped doing by hand. Both fit his September 2026 list of <a class="lnk" href="https://thorstenball.com/blog/2026/09/19/what-i-believe-about-the-future-of-software-development/" target="_blank" rel="noopener">beliefs about software</a>, where the craft of writing code disappears and the craft of building software matters more. He does not mention the books there. One parallel is ours, not his: his Amp note <a class="lnk" href="https://ampcode.com/notes/how-to-build-an-agent" target="_blank" rel="noopener">How to Build an Agent</a> has the books' shape. It starts from zero lines of Go, has no hidden parts, and asks you to type the code out.</p>
+
+  <h2 id="reading">How to read them</h2>
+  <p>He states his own advice in the first book's introduction, which he quoted in <a class="lnk" href="https://registerspill.thorstenball.com/p/cadence-of-code" target="_blank" rel="noopener">Cadence of Code</a>:</p>
+  <blockquote class="q off">This book is meant to be read from start to finish and I recommend that you follow along by reading, typing out and modifying the presented code.<span class="cite">&mdash; <a href="https://registerspill.thorstenball.com/p/cadence-of-code" target="_blank" rel="noopener">Thorsten Ball, quoting Writing An Interpreter In Go, in Cadence of Code (2023)</a></span></blockquote>
+  <ul class="readings">
+    <li><b>Read the free sample first.</b> The <a class="lnk" href="https://interpreterbook.com/sample.pdf" target="_blank" rel="noopener">interpreter sample</a> is the start of the lexer chapter. If that pace suits you, the rest will too.</li>
+    <li><b>Type it, don't paste it.</b> He types out the code of every book he truly wants to learn from, and in Cadence of Code he says the introduction does not set rules but nudges you toward this one.</li>
+    <li><b>Run the tests at every step.</b> Each section adds tests before or with the code. A red test that turns green is how you know you followed correctly. When something breaks, compare against the bundled code for that chapter, which is MIT-licensed and organised by chapter.</li>
+    <li><b>Spend extra time on chapter 2.</b> Pratt parsing is the idea most readers have not met before, and the rest of the book rests on it. Trace one expression such as <span class="mono">-1 + 2 * 3</span> by hand through the "How Pratt Parsing Works" section.</li>
+    <li><b>Consider a second language.</b> Implementing Monkey in a language you know better than Go forces you to understand each step instead of copying it. Nearly a hundred readers have published one; <a class="lnk" href="https://monkeylang.org/#monkeys-in-the-wild" target="_blank" rel="noopener">monkeylang.org</a> lists their versions to compare against.</li>
+    <li><b>Read in order, then do the Lost Chapter.</b> Finish book one, read the free macro chapter as a test of how well you know your own AST, then start the compiler book, which assumes the interpreter's code.</li>
+  </ul>
+
+  <div class="callout">Next: <a class="lnk" href="p09.html">How Thorsten works</a> &middot; Back to <a class="lnk" href="../index.html#books">the map</a>.</div>
+</main>
+<footer>Original explanation of Thorsten Ball's public work, page 08 of 10. Summaries and framing are ours; quotes are his and link to the source. Part of <a href="../index.html">the Thorsten Ball field map</a>.</footer>
+<!-- Private comments mode, inert unless ?annotate=1 (see assets/annotate.js in idvorkin-ai-tools.github.io) -->
+<script src="https://idvorkin-ai-tools.github.io/assets/annotate.js" defer></script>
+</body>
+</html>
