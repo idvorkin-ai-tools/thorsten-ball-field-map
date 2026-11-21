@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Thorsten Ball, Mapped — Joy, Curiosity and Coding Agents</title>
+<meta name="description" content="A field map of Thorsten Ball: Register Spill and Joy &amp; Curiosity, the Raising an Agent podcast, How to Build an Agent, the Monkey books, and how he works. One page per body of work, sources linked." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="paper.css" />
+<style>
+  main{max-width:960px}
+  .hero{padding:24px 0 8px}
+  .hero h1{font-size:clamp(32px,5.5vw,52px);line-height:1.05;margin:10px 0 14px;letter-spacing:-.01em}
+  .hero .sub{font-size:18px;color:var(--ink-dim);max-width:760px;line-height:1.55}
+  .answer{margin:28px 0 6px;padding:20px 24px;border-left:3px solid var(--off);background:var(--panel);
+    border-radius:0 12px 12px 0;color:var(--ink-mid);font-size:16.5px;line-height:1.6;max-width:780px}
+  .answer b{color:var(--ink)}
+  .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:26px 0 8px}
+  .fact{border:1px solid var(--line-soft);border-radius:8px;padding:12px 14px}
+  .fact .k{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim)}
+  .fact .v{font-size:17px;font-weight:600;margin-top:4px}
+  .rungs{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:22px 0 4px}
+  .rungs a{display:block;border:1px solid var(--line-soft);border-radius:8px;padding:10px 12px;text-decoration:none;color:var(--ink)}
+  .rungs a:hover{border-color:var(--def)}
+  .rungs .n{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--off-bright)}
+  .rungs a.c .n{color:var(--def)}
+  .rungs b{display:block;font-size:14px;margin-top:3px;line-height:1.3}
+  section{padding:56px 0;border-bottom:1px solid var(--line-soft);scroll-margin-top:64px}
+  section:last-of-type{border-bottom:none}
+  .arc-head{display:flex;align-items:baseline;gap:14px;margin:0 0 6px;flex-wrap:wrap}
+  .arc-head .idx{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--ink-dim)}
+  .arc-head h2{margin:0;font-size:26px}
+  .arc-sub{color:var(--ink-dim);margin:0 0 22px;max-width:720px}
+  .row{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px 0;border-top:1px solid var(--line-soft);align-items:start}
+  .row:first-of-type{border-top:none}
+  .row .num{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink-dim);padding-top:3px}
+  .row .name{font-weight:600;font-size:17px;line-height:1.3}
+  .row .name a{color:var(--ink)}
+  .row .meta{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-dim);margin:4px 0 6px;display:flex;flex-wrap:wrap;gap:10px}
+  .row .desc{color:var(--ink-dim);font-size:14.5px;line-height:1.55}
+  .amber .row .name a:hover{color:var(--off)} .cyan .row .name a:hover{color:var(--def)}
+  .check{width:16px;height:16px;border:1px solid var(--ink-dim);border-radius:4px;display:inline-block;vertical-align:-3px;margin-right:6px;cursor:pointer;background:transparent}
+  .check.on{background:var(--off);border-color:var(--off)}
+  .cyan .check.on{background:var(--def);border-color:var(--def)}
+  .progress{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-dim);margin-top:8px}
+  .loop{max-width:820px;margin:26px 0 0}
+  .loop svg{display:block;width:100%;height:auto}
+  @media (max-width:560px){.row{grid-template-columns:34px 1fr;gap:10px}}
+</style>
+</head>
+<body>
+<header class="bar"><div class="bar-in">
+  <div class="brand"><span class="dot"></span>THORSTEN&nbsp;//&nbsp;FIELD&nbsp;MAP</div>
+  <a class="back" href="https://idvorkin-ai-tools.github.io/">&larr; all field maps</a>
+</div></header>
+<main>
+  <div class="hero">
+    <div class="eyebrow"><span class="box wb mono">PEOPLE &middot; THORSTEN BALL</span><span class="mono">ten pages &middot; a newsletter, a podcast, two books</span></div>
+    <h1>Thorsten Ball, mapped</h1>
+    <p class="sub">Thorsten Ball is a software engineer and writer. He co-founded <a class="lnk" href="https://ampcode.com/" target="_blank" rel="noopener">Amp</a>, the coding agent, after years at Sourcegraph and Zed. He writes the weekly newsletter <a class="lnk" href="https://registerspill.thorstenball.com/" target="_blank" rel="noopener">Register Spill</a>, whose issues are now mostly called Joy &amp; Curiosity, and co-hosts <a class="lnk" href="https://ampcode.com/podcast" target="_blank" rel="noopener">Raising an Agent</a> with Quinn Slack. Before any of that he wrote two self-published books on building a programming language in Go. This site takes each body of work in turn.</p>
+
+    <div class="answer">
+      <b>The one-line version.</b> Thorsten likes to open black boxes. His books show that an interpreter is plain, tested Go with no libraries. His best-known agent essay shows that a coding agent is an LLM, a loop and a few tools, in under 400 lines. The podcast is two people building one of those agents in public and reporting each week on what it did to how they work. <a class="lnk" href="pages/p01.html">Start with who he is</a>, or jump to <a class="lnk" href="pages/p04.html">How to Build an Agent</a>.
+    </div>
+
+    <figure class="loop" aria-label="Thorsten's bodies of work over time">
+      <svg class="dg" viewBox="0 0 820 230" role="img">
+        <title>Thorsten Ball's main bodies of work, 2016 to 2026</title>
+        <line class="grid" x1="40" y1="120" x2="800" y2="120"/>
+        <text class="t-dim" x="40" y="146" font-size="11">2016</text>
+        <text class="t-dim" x="196" y="146" font-size="11">2018</text>
+        <text class="t-dim" x="508" y="146" font-size="11">2023</text>
+        <text class="t-dim" x="660" y="146" font-size="11">2025</text>
+        <text class="t-dim" x="760" y="146" font-size="11">2026</text>
+        <rect class="box-off" x="30" y="40" width="200" height="56" rx="10"/>
+        <text class="t-ink" x="130" y="64" text-anchor="middle" font-size="13">The Monkey books</text>
+        <text class="t-dim" x="130" y="83" text-anchor="middle" font-size="11">interpreter 2016 · compiler 2018</text>
+        <line class="ln-off" x1="60" y1="96" x2="60" y2="120"/><line class="ln-off" x1="210" y1="96" x2="210" y2="120"/>
+        <rect class="box-def" x="440" y="40" width="200" height="56" rx="10"/>
+        <text class="t-ink" x="540" y="64" text-anchor="middle" font-size="13">Register Spill</text>
+        <text class="t-dim" x="540" y="83" text-anchor="middle" font-size="11">weekly since Apr 2023</text>
+        <line class="ln-def" x1="520" y1="96" x2="520" y2="120"/>
+        <rect class="box-off" x="560" y="160" width="160" height="56" rx="10"/>
+        <text class="t-ink" x="640" y="184" text-anchor="middle" font-size="13">How to Build an Agent</text>
+        <text class="t-dim" x="640" y="203" text-anchor="middle" font-size="11">Apr 2025</text>
+        <line class="ln-off" x1="672" y1="120" x2="672" y2="160"/>
+        <rect class="box-def" x="660" y="40" width="150" height="56" rx="10"/>
+        <text class="t-ink" x="735" y="64" text-anchor="middle" font-size="13">Raising an Agent</text>
+        <text class="t-dim" x="735" y="83" text-anchor="middle" font-size="11">18 episodes, Mar 2025 →</text>
+        <line class="ln-def" x1="668" y1="96" x2="668" y2="120"/>
+        <text class="t-dim" x="300" y="184" text-anchor="middle" font-size="11">Sourcegraph · Zed · Sourcegraph · Amp</text>
+        <text class="t-dim" x="300" y="202" text-anchor="middle" font-size="10.5">(page 01 has the dated version)</text>
+      </svg>
+    </figure>
+
+    <div class="facts">
+      <div class="fact"><div class="k">Home</div><div class="v"><a class="lnk" href="https://thorstenball.com/" target="_blank" rel="noopener">thorstenball.com</a></div></div>
+      <div class="fact"><div class="k">Now</div><div class="v">co-founder, <a class="lnk" href="https://ampcode.com/about" target="_blank" rel="noopener">Amp</a></div></div>
+      <div class="fact"><div class="k">Newsletter</div><div class="v"><a class="lnk" href="https://registerspill.thorstenball.com/" target="_blank" rel="noopener">Register Spill</a>, 185 posts</div></div>
+      <div class="fact"><div class="k">Podcast</div><div class="v"><a class="lnk" href="https://ampcode.com/podcast" target="_blank" rel="noopener">Raising an Agent</a>, 18 eps</div></div>
+      <div class="fact"><div class="k">Books</div><div class="v"><a class="lnk" href="https://interpreterbook.com/" target="_blank" rel="noopener">Interpreter</a> · <a class="lnk" href="https://compilerbook.com/" target="_blank" rel="noopener">Compiler</a></div></div>
+      <div class="fact"><div class="k">GitHub</div><div class="v"><a class="lnk" href="https://github.com/mrnugget" target="_blank" rel="noopener">mrnugget</a></div></div>
+    </div>
+
+    <div class="rungs" aria-label="The arcs">
+      <a href="#person"><span class="n">ARC 0</span><b>The person and the bet</b></a>
+      <a href="#writing" class="c"><span class="n">ARC 1</span><b>The writing</b></a>
+      <a href="#agents"><span class="n">ARC 2</span><b>Building agents</b></a>
+      <a href="#podcast" class="c"><span class="n">ARC 3</span><b>Raising an Agent</b></a>
+      <a href="#books"><span class="n">ARC 4</span><b>The Monkey books</b></a>
+      <a href="#craft" class="c"><span class="n">ARC 5</span><b>How he works</b></a>
+    </div>
+    <p class="progress" id="progress">Tick a page when you have read it; this browser remembers.</p>
+  </div>
+
+  <section id="person" class="amber">
+    <div class="arc-head"><span class="idx">ARC 0</span><h2>The person and the bet</h2></div>
+    <p class="arc-sub">Where he worked, what he values, and what he now believes about software and agents.</p>
+    <div class="row"><div class="num"><span class="check" data-p="p01"></span>01</div><div><div class="name"><a href="pages/p01.html">Who Thorsten is, and what he's betting on</a></div><div class="meta"><span>career · Sourcegraph · Zed · Amp · the future of software</span></div><div class="desc">From book author and Sourcegraph engineer to co-founder of a coding-agent company, and how his view of AI moved from curious to all-in, with dates.</div></div></div>
+  </section>
+
+  <section id="writing" class="cyan">
+    <div class="arc-head"><span class="idx">ARC 1</span><h2>The writing</h2></div>
+    <p class="arc-sub">A weekly newsletter written against a Sunday timer, and the essays that made people read it.</p>
+    <div class="row"><div class="num"><span class="check" data-p="p02"></span>02</div><div><div class="name"><a href="pages/p02.html">Register Spill and Joy &amp; Curiosity</a></div><div class="meta"><span>the newsletter · the issue series · themes · standout issues</span></div><div class="desc">What the newsletter is, how the link roundup at the bottom of each post became the main event, what keeps coming up across a hundred issues, and which ones readers liked most.</div></div></div>
+    <div class="row"><div class="num"><span class="check" data-p="p03"></span>03</div><div><div class="name"><a href="pages/p03.html">The craft essays</a></div><div class="meta"><span>How I use git · The Basics · Be findable · From 1s to 4ms · and more</span></div><div class="desc">The standalone essays on tools, speed, teams, testing and the life of code, grouped by the argument they make.</div></div></div>
+  </section>
+
+  <section id="agents" class="amber">
+    <div class="arc-head"><span class="idx">ARC 2</span><h2>Building agents</h2></div>
+    <p class="arc-sub">The essay that showed how little an agent is, and the writing that followed as Amp grew.</p>
+    <div class="row"><div class="num"><span class="check" data-p="p04"></span>04</div><div><div class="name"><a href="pages/p04.html">How to Build an Agent: an LLM, a loop, and enough tokens</a></div><div class="meta"><span>Go · tool use · read_file · edit_file · "the emperor has no clothes"</span></div><div class="desc">A walk through the April 2025 essay: a chat loop, three tools, and the moment the model starts editing files on its own.</div></div></div>
+    <div class="row"><div class="num"><span class="check" data-p="p05"></span>05</div><div><div class="name"><a href="pages/p05.html">His agentic-coding writing, essay by essay</a></div><div class="meta"><span>How I use AI · How I use Amp · subagents · orbs · How I Prompt</span></div><div class="desc">The essays, Amp notes and the Laracon talk in date order, and how his position moved from autocomplete to parallel agents on remote machines.</div></div></div>
+  </section>
+
+  <section id="podcast" class="cyan">
+    <div class="arc-head"><span class="idx">ARC 3</span><h2>Raising an Agent</h2></div>
+    <p class="arc-sub">The podcast Quinn Slack and Thorsten started &ldquo;so excited while building Amp&rdquo; they had to share it. Every episode, with timestamps.</p>
+    <div class="row"><div class="num"><span class="check" data-p="p06"></span>06</div><div><div class="name"><a href="pages/p06.html">Season 1: the agent grows up</a></div><div class="meta"><span>10 episodes · Mar 2025 to Feb 2026</span></div><div class="desc">From the first wow moments of a working agent to subagents, the oracle, and the decision to kill the editor sidebar.</div></div></div>
+    <div class="row"><div class="num"><span class="check" data-p="p07"></span>07</div><div><div class="name"><a href="pages/p07.html">Season 2: orbs, jellyware and the company of the future</a></div><div class="meta"><span>8 episodes · Jul to Nov 2026</span></div><div class="desc">Remote parallel agents, cheap tokens, agents in production, no mandatory code review, and how a team of 21 runs without quarterly goals.</div></div></div>
+  </section>
+
+  <section id="books" class="amber">
+    <div class="arc-head"><span class="idx">ARC 4</span><h2>The Monkey books</h2></div>
+    <p class="arc-sub">Two self-published books that build one programming language from nothing.</p>
+    <div class="row"><div class="num"><span class="check" data-p="p08"></span>08</div><div><div class="name"><a href="pages/p08.html">Writing An Interpreter In Go and Writing A Compiler In Go</a></div><div class="meta"><span>Monkey · lexer · Pratt parser · tree-walker · bytecode VM</span></div><div class="desc">What each book builds, the tests-first no-dependencies method, why they became classics, and why they still matter when agents write the code.</div></div></div>
+  </section>
+
+  <section id="craft" class="cyan">
+    <div class="arc-head"><span class="idx">ARC 5</span><h2>How he works</h2></div>
+    <p class="arc-sub">The habits that show up across everything, and where every claim on this site comes from.</p>
+    <div class="row"><div class="num"><span class="check" data-p="p09"></span>09</div><div><div class="name"><a href="pages/p09.html">How Thorsten works</a></div><div class="meta"><span>timers · speed · tests · plans · prompts · ownership</span></div><div class="desc">Writing to a deadline, an allergy to waiting, tests as a safety net, plans and momentum, and how he prompts an agent.</div></div></div>
+    <div class="row"><div class="num"><span class="check" data-p="p10"></span>10</div><div><div class="name"><a href="pages/p10.html">Sources</a></div><div class="meta"><span>sites · posts · notes · episodes · books</span></div><div class="desc">Every post, note, episode and page this map draws on, linked and checked.</div></div></div>
+  </section>
+</main>
+<footer>An original explainer of Thorsten Ball's public work, built from his newsletter, blog, books, Amp notes and podcast. Summaries and framing are ours; quotes are his and link to the source. Counts are as of 2026-11-21. Part of <a href="https://idvorkin-ai-tools.github.io/">the idvorkin-ai-tools field maps</a>.</footer>
+<script>
+(function(){
+  var KEY='thorsten-field-map-read';
+  var read={};
+  try{read=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+  var boxes=document.querySelectorAll('.check');
+  function render(){
+    var n=0;
+    boxes.forEach(function(b){var on=!!read[b.dataset.p];b.classList.toggle('on',on);if(on)n++});
+    document.getElementById('progress').textContent=n?(n+' of '+boxes.length+' pages read in this browser.'):'Tick a page when you have read it; this browser remembers.';
+  }
+  boxes.forEach(function(b){b.addEventListener('click',function(){read[b.dataset.p]=!read[b.dataset.p];try{localStorage.setItem(KEY,JSON.stringify(read))}catch(e){};render()})});
+  render();
+})();
+</script>
+<!-- Private comments mode, inert unless ?annotate=1 (see assets/annotate.js in idvorkin-ai-tools.github.io) -->
+<script src="https://idvorkin-ai-tools.github.io/assets/annotate.js" defer></script>
+</body>
+</html>
