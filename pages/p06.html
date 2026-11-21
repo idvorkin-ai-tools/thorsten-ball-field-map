@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Raising an Agent, Season 1: the agent grows up &mdash; Thorsten Ball, mapped</title>
+<meta name="description" content="All ten episodes of the first season of Raising an Agent, the podcast Quinn Slack and Thorsten Ball recorded while building Amp, from a two-week-old prototype in March 2025 to killing the editor extension in February 2026." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../paper.css" />
+</head>
+<body>
+<header class="bar"><div class="bar-in">
+  <div class="brand"><span class="dot"></span>THORSTEN&nbsp;//&nbsp;FIELD&nbsp;MAP</div>
+  <a class="back" href="../index.html#podcast">&larr; the map</a>
+</div></header>
+<main>
+  <div class="eyebrow"><span class="box bb mono">RAISING AN AGENT &middot; PAGE 06 OF 10</span><span class="mono">season 1 &middot; 10 episodes &middot; Mar 2025 &ndash; Feb 2026</span></div>
+  <h1>Raising an Agent, Season 1: the agent grows up</h1>
+  <div class="authors">Ten episodes recorded while Amp went from a two-week-old prototype to a product that deleted its own editor extension.</div>
+  <div class="paperlink" style="border-left-color:var(--def)"><span class="lbl">Source</span><a href="https://ampcode.com/podcast" target="_blank" rel="noopener">Raising an Agent, a podcast by Quinn Slack and Thorsten Ball (ampcode.com) &#8599;</a></div>
+  <div class="tldr"><b>TL;DR &mdash;</b> Season 1 starts with two engineers amazed that an agent is just a model, a loop and some tools, and ends eleven months later with them announcing that the editor sidebar, the assistant workflow and manual context management are all on their way out. In between they argue that flat-rate pricing produces timid agents, that the conversation with the agent is a better record of a change than the commit, that codebases will bend to agents rather than the reverse, and that the context window is the constraint everything else is built around. Several of their early positions are reversed by the end, and they say so on air.</div>
+
+  <p class="lead">The show is the closest thing to a lab notebook for Amp: the same two people, every few weeks, saying what surprised them and what broke.</p>
+
+  <h2 id="show">What the show is</h2>
+  <p>Raising an Agent is hosted by Quinn Slack, Amp's CEO, and Thorsten Ball. It is published on <a class="lnk" href="https://ampcode.com/podcast" target="_blank" rel="noopener">ampcode.com/podcast</a>, on YouTube, on <a class="lnk" href="https://open.spotify.com/show/1AL44JiuDAszIPDnLNzBIu" target="_blank" rel="noopener">Spotify</a> and as an <a class="lnk" href="https://ampcode.com/podcast.rss" target="_blank" rel="noopener">RSS feed</a>. The podcast page explains why it exists in one line:</p>
+  <blockquote class="q">We got so excited while building Amp, we had to share that excitement.<span class="cite">&mdash; <a href="https://ampcode.com/podcast" target="_blank" rel="noopener">Raising an Agent, ampcode.com/podcast</a></span></blockquote>
+  <p>The first episode calls it a <a class="lnk" href="https://youtu.be/auVu08nXKOw?t=90" target="_blank" rel="noopener">&ldquo;diary of excitement&rdquo;</a> and a limited run. When ampcode.com launched with a waitlist in early April 2025, it already carried four episodes, as Thorsten wrote in <a class="lnk" href="https://registerspill.thorstenball.com/p/joy-and-curiosity-34" target="_blank" rel="noopener">Joy &amp; Curiosity #34</a>; he described them as talking about agents, programming and &ldquo;when it doesn't work&rdquo;. That last part is the show's habit: both hosts keep describing failures next to the wins.</p>
+  <p>Most episodes are Quinn and Thorsten. Beyang Liu interviews both of them in Episode 5, talks to Thorsten alone in Episode 7, and in Episode 8 talks to Camden Cheek about model evaluation with no Thorsten at all. Season 1 has two phases. Episodes 1&ndash;8 come every few weeks from March to August 2025. Then there is a five-month silence, and Episodes 9 and 10 arrive in January and February 2026 with a different message. When Episode 9 came out, Thorsten summed up the gap in his newsletter:</p>
+  <blockquote class="q">The agent’s now all grown-up and, hey, “the assistant’s dead, long live the factory.”<span class="cite">&mdash; <a href="https://registerspill.thorstenball.com/p/joy-and-curiosity-71" target="_blank" rel="noopener">Thorsten Ball, Joy &amp; Curiosity #71</a></span></blockquote>
+  <p>The transcripts have no speaker labels, so on this page a spoken claim is credited to Thorsten only where the conversation makes it clear (he names his own post or book, or Quinn addresses him). Otherwise it is credited to the episode.</p>
+
+  <figure class="fig wide"><div class="media">
+    <svg class="dg" viewBox="0 0 820 300" role="img" aria-label="Season 1 episodes on a dated timeline with one-line themes">
+      <title>Raising an Agent Season 1, March 2025 to February 2026</title>
+      <line class="ln" x1="40" y1="150" x2="405" y2="150"/>
+      <line class="ln-off" x1="405" y1="150" x2="729" y2="150" stroke-dasharray="5 5"/>
+      <line class="ln" x1="729" y1="150" x2="780" y2="150"/>
+      <text class="t-dim" x="428" y="140" text-anchor="middle" font-size="10">Sep</text>
+      <text class="t-dim" x="556" y="140" text-anchor="middle" font-size="10">Nov</text>
+      <text class="t-dim" x="685" y="140" text-anchor="middle" font-size="10">Jan 2026</text>
+      <text class="t-dim" x="40" y="172" font-size="10">Mar 2025</text>
+      <text class="t-off" x="567" y="172" text-anchor="middle" font-size="10">five months, no episodes</text>
+
+      <line class="ln-def" x1="50" y1="150" x2="86" y2="92"/>
+      <line class="ln-def" x1="65" y1="150" x2="248" y2="92"/>
+      <line class="ln-def" x1="97" y1="150" x2="410" y2="92"/>
+      <line class="ln-def" x1="112" y1="150" x2="572" y2="92"/>
+      <line class="ln-def" x1="196" y1="150" x2="734" y2="92"/>
+      <line class="ln-def" x1="228" y1="150" x2="86" y2="208"/>
+      <line class="ln-def" x1="341" y1="150" x2="248" y2="208"/>
+      <line class="ln-def" x1="405" y1="150" x2="410" y2="208"/>
+      <line class="ln-def" x1="729" y1="150" x2="572" y2="208"/>
+      <line class="ln-def" x1="759" y1="150" x2="734" y2="208"/>
+      <circle cx="50" cy="150" r="4" fill="var(--def)"/>
+      <circle cx="65" cy="150" r="4" fill="var(--def)"/>
+      <circle cx="97" cy="150" r="4" fill="var(--def)"/>
+      <circle cx="112" cy="150" r="4" fill="var(--def)"/>
+      <circle cx="196" cy="150" r="4" fill="var(--def)"/>
+      <circle cx="228" cy="150" r="4" fill="var(--def)"/>
+      <circle cx="341" cy="150" r="4" fill="var(--def)"/>
+      <circle cx="405" cy="150" r="4" fill="var(--off)"/>
+      <circle cx="729" cy="150" r="4" fill="var(--def)"/>
+      <circle cx="759" cy="150" r="4" fill="var(--def)"/>
+
+      <rect class="box-def" x="10" y="20" width="152" height="72" rx="8"/>
+      <text class="t-def" x="86" y="40" text-anchor="middle" font-size="11">E1 &#183; Mar 6, 2025</text>
+      <text class="t-ink" x="86" y="58" text-anchor="middle" font-size="10">the agent is mostly</text>
+      <text class="t-ink" x="86" y="74" text-anchor="middle" font-size="10">the model plus tools</text>
+      <rect class="box-def" x="172" y="20" width="152" height="72" rx="8"/>
+      <text class="t-def" x="248" y="40" text-anchor="middle" font-size="11">E2 &#183; Mar 13</text>
+      <text class="t-ink" x="248" y="58" text-anchor="middle" font-size="10">no token limits;</text>
+      <text class="t-ink" x="248" y="74" text-anchor="middle" font-size="10">against flat rates</text>
+      <rect class="box-def" x="334" y="20" width="152" height="72" rx="8"/>
+      <text class="t-def" x="410" y="40" text-anchor="middle" font-size="11">E3 &#183; Mar 28</text>
+      <text class="t-ink" x="410" y="58" text-anchor="middle" font-size="10">shared threads;</text>
+      <text class="t-ink" x="410" y="74" text-anchor="middle" font-size="10">search as a subagent</text>
+      <rect class="box-def" x="496" y="20" width="152" height="72" rx="8"/>
+      <text class="t-def" x="572" y="40" text-anchor="middle" font-size="11">E4 &#183; Apr 4</text>
+      <text class="t-ink" x="572" y="58" text-anchor="middle" font-size="10">code gets cheap; the</text>
+      <text class="t-ink" x="572" y="74" text-anchor="middle" font-size="10">thread is the record</text>
+      <rect class="box-def" x="658" y="20" width="152" height="72" rx="8"/>
+      <text class="t-def" x="734" y="40" text-anchor="middle" font-size="11">E5 &#183; May 14</text>
+      <text class="t-ink" x="734" y="58" text-anchor="middle" font-size="10">a power tool with a</text>
+      <text class="t-ink" x="734" y="74" text-anchor="middle" font-size="10">curated set of tools</text>
+
+      <rect class="box-def" x="10" y="208" width="152" height="72" rx="8"/>
+      <text class="t-def" x="86" y="228" text-anchor="middle" font-size="11">E6 &#183; May 29</text>
+      <text class="t-ink" x="86" y="246" text-anchor="middle" font-size="10">Sonnet 4, subagents,</text>
+      <text class="t-ink" x="86" y="262" text-anchor="middle" font-size="10">and background agents</text>
+      <rect class="box-def" x="172" y="208" width="152" height="72" rx="8"/>
+      <text class="t-def" x="248" y="228" text-anchor="middle" font-size="11">E7 &#183; Jul 22</text>
+      <text class="t-ink" x="248" y="246" text-anchor="middle" font-size="10">the context window;</text>
+      <text class="t-ink" x="248" y="262" text-anchor="middle" font-size="10">subagents, the oracle</text>
+      <rect class="box-off" x="334" y="208" width="152" height="72" rx="8"/>
+      <text class="t-off" x="410" y="228" text-anchor="middle" font-size="11">E8 &#183; Aug 21</text>
+      <text class="t-ink" x="410" y="246" text-anchor="middle" font-size="10">how to judge a model</text>
+      <text class="t-dim" x="410" y="262" text-anchor="middle" font-size="10">(Beyang + Camden)</text>
+      <rect class="box-def" x="496" y="208" width="152" height="72" rx="8"/>
+      <text class="t-def" x="572" y="228" text-anchor="middle" font-size="11">E9 &#183; Jan 22, 2026</text>
+      <text class="t-ink" x="572" y="246" text-anchor="middle" font-size="10">the assistant is dead,</text>
+      <text class="t-ink" x="572" y="262" text-anchor="middle" font-size="10">long live the factory</text>
+      <rect class="box-def" x="658" y="208" width="152" height="72" rx="8"/>
+      <text class="t-def" x="734" y="228" text-anchor="middle" font-size="11">E10 &#183; Feb 5, 2026</text>
+      <text class="t-ink" x="734" y="246" text-anchor="middle" font-size="10">the sidebar is dead;</text>
+      <text class="t-ink" x="734" y="262" text-anchor="middle" font-size="10">deep mode and skills</text>
+    </svg>
+  </div>
+  <figcaption>Our sketch. Dots sit at the RSS release dates on a true time scale, which is why the first four episodes bunch up between March 6 and April 4. The amber box is the one episode without Thorsten. The dashed stretch is the gap between August 2025 and January 2026.</figcaption></figure>
+
+  <h2 id="s1e1">Episode 1: the agent is mostly the model</h2>
+  <p class="mono">Released Mar 6, 2025 &middot; 29:40 &middot; Quinn Slack and Thorsten Ball &middot; <a class="lnk" href="https://ampcode.com/podcast/episode-1" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/auVu08nXKOw" target="_blank" rel="noopener">YouTube</a></p>
+  <p>Two to three weeks into hacking on a prototype, the hosts are surprised by how little of the result comes from their own code. They split an agent into the model, the tools and the wiring, and find the wiring is the easy part: the model already knows how to use an editor, a file viewer and a terminal, and improvises when a tool call fails. Their lesson is about expectations. Nobody writes 300 correct lines in one go without a compiler, tests and linters, and a model given the same feedback starts fixing its own mistakes. So the harness should stop spoon-feeding context and let the model fetch what it needs. They also commit early to having opinions: one best model rather than a model picker, and the freedom to remove features.</p>
+  <ul class="outline">
+    <li><a href="https://youtu.be/auVu08nXKOw?t=181" target="_blank" rel="noopener">03:01</a> &mdash; the recording feature: record your edits, ask the model to repeat them. The agent built the feature itself, and the model understood a diff made of single-character changes.</li>
+    <li><a href="https://youtu.be/auVu08nXKOw?t=393" target="_blank" rel="noopener">06:33</a> &mdash; tools, model, wiring: the wiring took about two weeks and was the easy part.</li>
+    <li><a href="https://youtu.be/auVu08nXKOw?t=488" target="_blank" rel="noopener">08:08</a> &mdash; the edit tool fails twice, so the model writes a new file and moves it over the old one.</li>
+    <li><a href="https://youtu.be/auVu08nXKOw?t=643" target="_blank" rel="noopener">10:43</a> &mdash; the crucial bit is the right feedback at the right time.</li>
+    <li><a href="https://youtu.be/auVu08nXKOw?t=703" target="_blank" rel="noopener">11:43</a> &mdash; inversion of control: the model stops being a baby bird you feed and becomes a bird that catches its own food.</li>
+    <li><a href="https://youtu.be/auVu08nXKOw?t=1165" target="_blank" rel="noopener">19:25</a> &mdash; if models froze today, the claim goes, builders would have years of work left using what is already there.</li>
+    <li><a href="https://youtu.be/auVu08nXKOw?t=1319" target="_blank" rel="noopener">21:59</a> &mdash; no model selector: be opinionated about the best model and willing to rip features out.</li>
+  </ul>
+
+  <h2 id="s1e2">Episode 2: no token limits, and where it breaks</h2>
+  <p class="mono">Released Mar 13, 2025 &middot; 29:05 &middot; Quinn Slack and Thorsten Ball &middot; <a class="lnk" href="https://ampcode.com/podcast/episode-2" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/4N814ziAn4o" target="_blank" rel="noopener">YouTube</a></p>
+  <p>The second episode is about limits. In the model, the limit is architecture: the agent is good at local changes and goes off the rails when a change needs new APIs, and Thorsten wonders whether that is why engineers a few years into their careers struggle more with these tools than juniors or seniors. In the product, the limit is rationing. Their claim is that the agent's autonomy comes from sending every error back and letting it retry, which a product built to save requests would cut short, so they predict that flat-rate subscriptions will be outgrown. They end with parallel agents tripping over each other's builds, and with the idea that a company should train one shared agent instead of every developer training their own.</p>
+  <ul class="outline">
+    <li><a href="https://youtu.be/4N814ziAn4o?t=67" target="_blank" rel="noopener">01:07</a> &mdash; why it is addictive: you skip the warm-up shuffle and start by typing a wish list.</li>
+    <li><a href="https://youtu.be/4N814ziAn4o?t=284" target="_blank" rel="noopener">04:44</a> &mdash; the &ldquo;eject handle&rdquo;: dump everything learned into task.md, start a fresh agent, ask what it would do differently.</li>
+    <li><a href="https://youtu.be/4N814ziAn4o?t=405" target="_blank" rel="noopener">06:45</a> &mdash; the junior/senior curve and the uncanny valley in the middle.</li>
+    <li><a href="https://youtu.be/4N814ziAn4o?t=498" target="_blank" rel="noopener">08:18</a> &mdash; testing the tests: which line do I comment out to watch this test fail?</li>
+    <li><a href="https://youtu.be/4N814ziAn4o?t=714" target="_blank" rel="noopener">11:54</a> &mdash; the bold prediction that flat-rate subscriptions look outdated.</li>
+    <li><a href="https://youtu.be/4N814ziAn4o?t=745" target="_blank" rel="noopener">12:25</a> &mdash; &ldquo;the magic of the no token limit&rdquo;.</li>
+    <li><a href="https://youtu.be/4N814ziAn4o?t=1236" target="_blank" rel="noopener">20:36</a> &mdash; two agents in one checkout: the case for separate worktrees.</li>
+    <li><a href="https://youtu.be/4N814ziAn4o?t=1700" target="_blank" rel="noopener">28:20</a> &mdash; the company trains the AI intern and everyone gets a clone, with a review agent as the safety net.</li>
+  </ul>
+
+  <h2 id="s1e3">Episode 3: paint by numbers, and what search is for</h2>
+  <p class="mono">Released Mar 28, 2025 &middot; 36:47 &middot; Quinn Slack and Thorsten Ball &middot; <a class="lnk" href="https://ampcode.com/podcast/episode-3" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/N04FM1e3sbY" target="_blank" rel="noopener">YouTube</a></p>
+  <p>The episode answers the skeptic who says you can't understand code you didn't write. Thorsten's answer is paint by numbers: the human draws the outlines, meaning the architecture and what goes in the context window, and the agent fills in the regions. Two ideas that run through the rest of the season appear here: shared threads record how a change came to be, which a commit message never could, and codebases will bend to agents rather than the reverse. The second half is Thorsten's search agent. He says he told Quinn before rejoining that Sourcegraph is not a code search company, because customers pay to understand their code and the search box is only one way to get there. He built the search subagent in a day and gave it its own context window, so the files it digs up on a failed search never pollute the main agent.</p>
+  <ul class="outline">
+    <li><a href="https://youtu.be/N04FM1e3sbY?t=215" target="_blank" rel="noopener">03:35</a> &mdash; paint by numbers: you draw the lines, the agent colours inside them.</li>
+    <li><a href="https://youtu.be/N04FM1e3sbY?t=461" target="_blank" rel="noopener">07:41</a> &mdash; &ldquo;it's never just fixing one line&rdquo;.</li>
+    <li><a href="https://youtu.be/N04FM1e3sbY?t=673" target="_blank" rel="noopener">11:13</a> &mdash; connected mode and thread sharing: see how teammates cut up problems.</li>
+    <li><a href="https://youtu.be/N04FM1e3sbY?t=768" target="_blank" rel="noopener">12:48</a> &mdash; staple the prompts and context to the commit and the pull request.</li>
+    <li><a href="https://youtu.be/N04FM1e3sbY?t=982" target="_blank" rel="noopener">16:22</a> &mdash; the feedback-loop hypothesis, and why getting the agent to run the right tests is still hard.</li>
+    <li><a href="https://youtu.be/N04FM1e3sbY?t=1346" target="_blank" rel="noopener">22:26</a> &mdash; &ldquo;we will bend to the agents&rdquo;.</li>
+    <li><a href="https://youtu.be/N04FM1e3sbY?t=1501" target="_blank" rel="noopener">25:01</a> &mdash; nobody pays for a search box; the search agent built in a day.</li>
+    <li><a href="https://youtu.be/N04FM1e3sbY?t=1900" target="_blank" rel="noopener">31:40</a> &mdash; why a separate subagent: whatever lands in the context window biases the model.</li>
+  </ul>
+
+  <h2 id="s1e4">Episode 4: what happens to code when it gets cheap</h2>
+  <p class="mono">Released Apr 4, 2025 &middot; 33:36 &middot; Quinn Slack and Thorsten Ball &middot; <a class="lnk" href="https://ampcode.com/podcast/episode-4" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/2ITBH4dIfWY" target="_blank" rel="noopener">YouTube</a></p>
+  <p>The fourth episode makes the season's biggest prediction so far: if agents write most code, code becomes cheap and we will care less about each line. Quinn's example is finding <span class="mono">any</span> types in an agent-built feature and realising that bad code used to worry him because it signalled a human who misunderstood the system, while an agent's mistakes are more random. The same logic weakens the case for small libraries, and they ask what that does to open source, code hosts and the contribution graph. Their sketch of a code host stores the agents and prompts next to the code, with the thread as the record of each change. Quinn reminds Thorsten that he wrote books about programs that write programs, and Thorsten says that is why he lay awake drafting a post he published a month later as <a class="lnk" href="https://registerspill.thorstenball.com/p/theres-beauty-in-ai" target="_blank" rel="noopener">There's Beauty in AI</a>. They close on failure: a page clobbered against clear instructions, and an agent distracted by whatever file happened to be open.</p>
+  <ul class="outline">
+    <li><a href="https://youtu.be/2ITBH4dIfWY?t=215" target="_blank" rel="noopener">03:35</a> &mdash; the trajectory argument: code is going to get cheaper.</li>
+    <li><a href="https://youtu.be/2ITBH4dIfWY?t=310" target="_blank" rel="noopener">05:10</a> &mdash; the <span class="mono">any</span> types, and why we worry about bad code at all.</li>
+    <li><a href="https://youtu.be/2ITBH4dIfWY?t=467" target="_blank" rel="noopener">07:47</a> &mdash; open source losing value; why search for a library you could generate?</li>
+    <li><a href="https://youtu.be/2ITBH4dIfWY?t=744" target="_blank" rel="noopener">12:24</a> &mdash; the LLM as a static site generator that accepts any input, even a photo of a handwritten note.</li>
+    <li><a href="https://youtu.be/2ITBH4dIfWY?t=1140" target="_blank" rel="noopener">19:00</a> &mdash; the code host as a place for code plus agents plus prompts.</li>
+    <li><a href="https://youtu.be/2ITBH4dIfWY?t=1294" target="_blank" rel="noopener">21:34</a> &mdash; thread links in commit messages, and why that association should be automatic.</li>
+    <li><a href="https://youtu.be/2ITBH4dIfWY?t=1355" target="_blank" rel="noopener">22:35</a> &mdash; the sleepless night and the draft disclaimer of a man who cares about code.</li>
+    <li><a href="https://youtu.be/2ITBH4dIfWY?t=1448" target="_blank" rel="noopener">24:08</a> &mdash; most developer tooling is text transformation, and now there is a general text transformer.</li>
+  </ul>
+
+  <h2 id="s1e5">Episode 5: five weeks later, a power tool</h2>
+  <p class="mono">Released May 14, 2025 &middot; 1:05:39 &middot; Beyang Liu with Quinn Slack and Thorsten Ball &middot; <a class="lnk" href="https://ampcode.com/podcast/episode-5" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/M8kZLuukZgk" target="_blank" rel="noopener">YouTube</a></p>
+  <p>Recorded in person in San Francisco with Beyang asking the questions, this is the longest episode and the fullest statement of the product philosophy. Thorsten points to his note <a class="lnk" href="https://ampcode.com/notes/how-to-build-an-agent" target="_blank" rel="noopener">How to Build an Agent</a>, subtitled &ldquo;The Emperor Has No Clothes&rdquo;, and is still puzzled that readers assume there is a hidden trick. What does matter, they say, is a small set of tools whose prompts are tuned together, not dozens of MCP tools the model has never seen. The target is a user willing to put in effort, and Thorsten's image is a power drill for the busywork rather than a box that builds a wedding website from one line. Quinn says that in 90% of the shared threads where Amp failed, the agent was not actually running the build. The product should be scaffolding that falls away as models improve, which is why the input is a plain text area.</p>
+  <blockquote class="q">It’s an LLM, a loop, and enough tokens.<span class="cite">&mdash; <a href="https://ampcode.com/notes/how-to-build-an-agent" target="_blank" rel="noopener">Thorsten Ball, How to Build an Agent</a></span></blockquote>
+  <ul class="outline">
+    <li><a href="https://youtu.be/M8kZLuukZgk?t=184" target="_blank" rel="noopener">03:04</a> &mdash; the how-to-build-an-agent post and the &ldquo;there's no moat&rdquo; reaction.</li>
+    <li><a href="https://youtu.be/M8kZLuukZgk?t=398" target="_blank" rel="noopener">06:38</a> &mdash; the hill to stand on: a curated, tuned set of tools.</li>
+    <li><a href="https://youtu.be/M8kZLuukZgk?t=675" target="_blank" rel="noopener">11:15</a> &mdash; a power drill, not &ldquo;build me a wedding website&rdquo;.</li>
+    <li><a href="https://youtu.be/M8kZLuukZgk?t=983" target="_blank" rel="noopener">16:23</a> &mdash; the emerging techniques: context, feedback loops, plan files, then orchestration.</li>
+    <li><a href="https://youtu.be/M8kZLuukZgk?t=1230" target="_blank" rel="noopener">20:30</a> &mdash; will the codebase bend to agents? Hardcore Vim users switching editors as evidence.</li>
+    <li><a href="https://youtu.be/M8kZLuukZgk?t=1907" target="_blank" rel="noopener">31:47</a> &mdash; the first question when it fails: is it actually doing the build?</li>
+    <li><a href="https://youtu.be/M8kZLuukZgk?t=2794" target="_blank" rel="noopener">46:34</a> &mdash; a plain text area, and the product as wooden scaffolding around the model.</li>
+    <li><a href="https://youtu.be/M8kZLuukZgk?t=3254" target="_blank" rel="noopener">54:14</a> &mdash; selecting an agent, not a model.</li>
+  </ul>
+
+  <h2 id="s1e6">Episode 6: Sonnet 4 and agents that call agents</h2>
+  <p class="mono">Released May 29, 2025 &middot; 35:05 &middot; Quinn Slack and Thorsten Ball &middot; <a class="lnk" href="https://ampcode.com/podcast/episode-6" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/HVihMH5j8KQ" target="_blank" rel="noopener">YouTube</a></p>
+  <p>The waitlist is gone (<a class="lnk" href="https://ampcode.com/notes/how-i-use-amp" target="_blank" rel="noopener">Thorsten's launch note</a>), and Amp switched its main model to <a class="lnk" href="https://ampcode.com/news/default-claude-sonnet-4" target="_blank" rel="noopener">Claude Sonnet 4</a> the week before. Thorsten has had to retrain his sense of what is too big for one thread, and Sonnet 4 eagerly uses a generic sub-agent tool: asked to strip a front-matter field from the posts in his blog repo, it spawned four agents in parallel. Each sub-agent gets a fresh context window, so one that flails costs the parent almost nothing. They read this eagerness as a deliberate choice by the lab, and contrast models built to produce a whole app in one go with Anthropic's, built to react to its environment and wriggle out of errors. For background agents their bet is CI as the feedback channel, because copying a developer's environment into the cloud has defeated nearly everyone who tried. The episode ends with tips: a plain storybook page, a dev-only login bypass so the agent can browse the app, and agent-generated seed data.</p>
+  <ul class="outline">
+    <li><a href="https://youtu.be/HVihMH5j8KQ?t=124" target="_blank" rel="noopener">02:04</a> &mdash; a day of writing code by hand after the agent's rough draft: moving the guard rails, finding the invariants.</li>
+    <li><a href="https://youtu.be/HVihMH5j8KQ?t=524" target="_blank" rel="noopener">08:44</a> &mdash; re-calibrating what is too big for one thread.</li>
+    <li><a href="https://youtu.be/HVihMH5j8KQ?t=743" target="_blank" rel="noopener">12:23</a> &mdash; the blog-repo example: four sub-agents spawned in parallel.</li>
+    <li><a href="https://youtu.be/HVihMH5j8KQ?t=835" target="_blank" rel="noopener">13:55</a> &mdash; each sub-agent has its own context window.</li>
+    <li><a href="https://youtu.be/HVihMH5j8KQ?t=1079" target="_blank" rel="noopener">17:59</a> &mdash; two philosophies of agent: one-shot an app, or react to the environment, such as restarting a server it knows nothing about.</li>
+    <li><a href="https://youtu.be/HVihMH5j8KQ?t=1569" target="_blank" rel="noopener">26:09</a> &mdash; the hypothesis: background agents should use CI for feedback first.</li>
+    <li><a href="https://youtu.be/HVihMH5j8KQ?t=1906" target="_blank" rel="noopener">31:46</a> &mdash; emojis and long summaries, and why you can't prompt against the grain of the model.</li>
+  </ul>
+
+  <h2 id="s1e7">Episode 7: the context window, subagents and the oracle</h2>
+  <p class="mono">Released Jul 22, 2025 &middot; 53:55 &middot; Beyang Liu and Thorsten Ball &middot; <a class="lnk" href="https://ampcode.com/podcast/episode-7" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/p8a0PePNWlA" target="_blank" rel="noopener">YouTube</a></p>
+  <p>Beyang interviews Thorsten over screen shares of real threads, and it is the clearest statement of how Thorsten thought about agents in mid-2025. His definition: an agent is a model with tools that let it change things outside its context window, and because agents are trained to be eager, you have to say more up front. He explains the context window from first principles: it is the model's working memory and everything in it influences everything else, so a thread should stay on one topic. Sub-agents follow from that; they are interns you send to the archive, and their detours never enter your own working memory. He shows a migration where the main agent became a coordinator of sub-agents, and parallel sub-agents speeding up tests (they mocked too much, he admits). The new piece is the <a class="lnk" href="https://ampcode.com/news/oracle" target="_blank" rel="noopener">oracle</a>, a read-only sub-agent running OpenAI's o3 that the main agent consults for review, planning and debugging, so one conversation now draws on two models.</p>
+  <ul class="outline">
+    <li><a href="https://youtu.be/p8a0PePNWlA?t=342" target="_blank" rel="noopener">05:42</a> &mdash; Thorsten's personal definition of an agent.</li>
+    <li><a href="https://youtu.be/p8a0PePNWlA?t=465" target="_blank" rel="noopener">07:45</a> &mdash; agents are trained to be eager, so specify more at the start.</li>
+    <li><a href="https://youtu.be/p8a0PePNWlA?t=1174" target="_blank" rel="noopener">19:34</a> &mdash; asking it to keep only the last 50 lines: an instruction one step above pseudo-code.</li>
+    <li><a href="https://youtu.be/p8a0PePNWlA?t=1645" target="_blank" rel="noopener">27:25</a> &mdash; everything in the context window matters.</li>
+    <li><a href="https://youtu.be/p8a0PePNWlA?t=1861" target="_blank" rel="noopener">31:01</a> &mdash; keep each thread focused on one thing.</li>
+    <li><a href="https://youtu.be/p8a0PePNWlA?t=2167" target="_blank" rel="noopener">36:07</a> &mdash; the 1960s office and the intern who goes looking for the file.</li>
+    <li><a href="https://youtu.be/p8a0PePNWlA?t=2450" target="_blank" rel="noopener">40:50</a> &mdash; the main agent as coordinator of sub-agents.</li>
+    <li><a href="https://youtu.be/p8a0PePNWlA?t=2937" target="_blank" rel="noopener">48:57</a> &mdash; the oracle: o3 as a sub-agent for review, planning and debugging.</li>
+  </ul>
+
+  <h2 id="s1e8">Episode 8: how Amp judges a model (without Thorsten)</h2>
+  <p class="mono">Released Aug 21, 2025 &middot; 53:14 &middot; Beyang Liu and Camden Cheek; Thorsten is not in this one &middot; <a class="lnk" href="https://ampcode.com/podcast/episode-8" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/doTI08ukee0" target="_blank" rel="noopener">YouTube</a></p>
+  <p>Beyang and Camden, from the Amp core team, explain how Amp decides which model drives the agent. Their core claim is that tool calling separates models: a model can be brilliant at one-shotting a website and still fail as an agent if it emits malformed tool calls or can't recover from a bad step, because errors compound over a long chain. Open models like K2 and Qwen come out at about 80% of the way there, which sounds close until you remember that a real task is dozens of small steps. Dropping a new model into a harness tuned for another is unfair to it; GPT-5 felt awful at first because prompts written around Sonnet's habits pushed it into odd behaviour, and good once tuned. Their evaluation is mostly qualitative: a fixed set of real tasks run by hand many times, with numbers kept for regressions and trends. Putting a model behind a named sub-agent like the oracle lets Amp swap the model without the user noticing.</p>
+  <ul class="outline">
+    <li><a href="https://youtu.be/doTI08ukee0?t=63" target="_blank" rel="noopener">01:03</a> &mdash; the multi-model philosophy: take the best model for each slot.</li>
+    <li><a href="https://youtu.be/doTI08ukee0?t=220" target="_blank" rel="noopener">03:40</a> &mdash; why Gemini Pro didn't stick: great at one-shotting, weak at self-correcting.</li>
+    <li><a href="https://youtu.be/doTI08ukee0?t=373" target="_blank" rel="noopener">06:13</a> &mdash; every chained call is a dice roll, and the decay is exponential.</li>
+    <li><a href="https://youtu.be/doTI08ukee0?t=500" target="_blank" rel="noopener">08:20</a> &mdash; overlapping tools have become an advantage: more ways out of a ditch.</li>
+    <li><a href="https://youtu.be/doTI08ukee0?t=683" target="_blank" rel="noopener">11:23</a> &mdash; fast inference and &ldquo;the 56k era of agents&rdquo;.</li>
+    <li><a href="https://youtu.be/doTI08ukee0?t=872" target="_blank" rel="noopener">14:32</a> &mdash; what 80% means: four out of five mini-tasks.</li>
+    <li><a href="https://youtu.be/doTI08ukee0?t=1304" target="_blank" rel="noopener">21:44</a> &mdash; model alloys, and the oracle as a poor man's version.</li>
+    <li><a href="https://youtu.be/doTI08ukee0?t=2320" target="_blank" rel="noopener">38:40</a> &mdash; why vibes over benchmarks.</li>
+  </ul>
+
+  <h2 id="s1e9">Episode 9: the assistant is dead, long live the factory</h2>
+  <p class="mono">Released Jan 22, 2026 &middot; 40:50 &middot; Quinn Slack and Thorsten Ball &middot; <a class="lnk" href="https://ampcode.com/podcast/episode-9" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/2wjnV6F2arc" target="_blank" rel="noopener">YouTube</a></p>
+  <p>Five months later the tone is different. Gemini 3 and Opus 4.5, each made Amp's main model in November 2025 (per the <a class="lnk" href="https://ampcode.com/news/gemini-3" target="_blank" rel="noopener">Gemini 3</a> and <a class="lnk" href="https://ampcode.com/news/opus-4.5" target="_blank" rel="noopener">Opus 4.5</a> announcements), changed what the hosts think an agent can be trusted with, and they argue that most people's trust lags the frontier by months. Thorsten admits his own lag: he had described the work as a back-and-forth with one agent, and now finds you can point the agent at the shelf and ask for a cake instead of fetching each ingredient for it. The work moves to the codebase: give the agent ways to check its own changes (a screenshot flag in a terminal emulator, a CLI subcommand that prints what the UI shows) and ask whether it could ship something in its first ten minutes, a modern take on Joel Spolsky's old checklist. Tools that assume a person wrote each change, like tickets and pull requests with emoji reactions, are the next thing they expect to break. A closing Q&amp;A explains why Amp still has no model picker and no subscription, and teases deep mode.</p>
+  <ul class="outline">
+    <li><a href="https://youtu.be/2wjnV6F2arc?t=184" target="_blank" rel="noopener">03:04</a> &mdash; &ldquo;writing code is over&rdquo; and the people who changed their minds over Christmas.</li>
+    <li><a href="https://youtu.be/2wjnV6F2arc?t=495" target="_blank" rel="noopener">08:15</a> &mdash; the longer leash: here's the shelf, go bake me a cake.</li>
+    <li><a href="https://youtu.be/2wjnV6F2arc?t=680" target="_blank" rel="noopener">11:20</a> &mdash; weld the agent to the codebase so it knows how to verify its work.</li>
+    <li><a href="https://youtu.be/2wjnV6F2arc?t=895" target="_blank" rel="noopener">14:55</a> &mdash; can your agent ship something in its first 10 minutes? Two concrete feedback hooks.</li>
+    <li><a href="https://youtu.be/2wjnV6F2arc?t=1385" target="_blank" rel="noopener">23:05</a> &mdash; optimizing for cheaper, non-frontier models builds something outdated in half a year.</li>
+    <li><a href="https://youtu.be/2wjnV6F2arc?t=1540" target="_blank" rel="noopener">25:40</a> &mdash; the new slogan, and the human's job: feed the factory and widen what it can finish.</li>
+    <li><a href="https://youtu.be/2wjnV6F2arc?t=1696" target="_blank" rel="noopener">28:16</a> &mdash; dev tools that assume a human wrote the code.</li>
+    <li><a href="https://youtu.be/2wjnV6F2arc?t=2060" target="_blank" rel="noopener">34:20</a> &mdash; why not a subscription.</li>
+  </ul>
+
+  <h2 id="s1e10">Episode 10: the sidebar is dead</h2>
+  <p class="mono">Released Feb 5, 2026 &middot; 55:50 &middot; Quinn Slack and Thorsten Ball &middot; <a class="lnk" href="https://ampcode.com/podcast/episode-10" target="_blank" rel="noopener">episode page</a> &middot; <a class="lnk" href="https://youtu.be/4rx36wc9ugw" target="_blank" rel="noopener">YouTube</a></p>
+  <p>The finale opens with <a class="lnk" href="https://ampcode.com/news/deep-mode" target="_blank" rel="noopener">deep mode</a>, launched the week before on GPT-5.2-Codex, a model that reads quietly for many minutes before making a change. Thorsten admits it didn't fit how he worked until he stopped expecting an assistant, and reverses himself on air: last year's carefully held power drill gives way to a prompt you send off and check on later. Then the news: they will kill the Amp editor extension, because the sidebar keeps you to one agent at a time, because the human in the sidebar is the real feedback loop, and because keeping it would fill the user base with laggards. The written announcement, <a class="lnk" href="https://ampcode.com/news/the-coding-agent-is-dead" target="_blank" rel="noopener">The Coding Agent Is Dead</a>, set the self-destruct for March 5, 2026. They also describe making their own repo agent-friendly with skills, one cached test command and a faster type checker that briefly made the editor worse for humans, and say manual context management is ending too. They close by calling Amp something like an art installation that has to re-earn its customers every three months, and Thorsten's newsletter put it shortest:</p>
+  <blockquote class="q">The only winning move now is to accept that the board will be flipped at random intervals.<span class="cite">&mdash; <a href="https://registerspill.thorstenball.com/p/joy-and-curiosity-73" target="_blank" rel="noopener">Thorsten Ball, Joy &amp; Curiosity #73</a></span></blockquote>
+  <ul class="outline">
+    <li><a href="https://youtu.be/4rx36wc9ugw?t=94" target="_blank" rel="noopener">01:34</a> &mdash; three modes: rush, smart, and the new deep.</li>
+    <li><a href="https://youtu.be/4rx36wc9ugw?t=525" target="_blank" rel="noopener">08:45</a> &mdash; &ldquo;I said the opposite things of what I'm saying right now&rdquo;.</li>
+    <li><a href="https://youtu.be/4rx36wc9ugw?t=709" target="_blank" rel="noopener">11:49</a> &mdash; skills as the abstraction that stuck; &ldquo;now build me a skill&rdquo;.</li>
+    <li><a href="https://youtu.be/4rx36wc9ugw?t=1112" target="_blank" rel="noopener">18:32</a> &mdash; agent DX versus human DX, and choosing the agent.</li>
+    <li><a href="https://youtu.be/4rx36wc9ugw?t=1330" target="_blank" rel="noopener">22:10</a> &mdash; one-on-one with an agent in a sidebar is coming to an end.</li>
+    <li><a href="https://youtu.be/4rx36wc9ugw?t=1450" target="_blank" rel="noopener">24:10</a> &mdash; the sidebar as a crutch: you are the feedback loop.</li>
+    <li><a href="https://youtu.be/4rx36wc9ugw?t=1694" target="_blank" rel="noopener">28:14</a> &mdash; PC to internet to mobile, compressed into a year.</li>
+    <li><a href="https://youtu.be/4rx36wc9ugw?t=2647" target="_blank" rel="noopener">44:07</a> &mdash; the time of manual context management is coming to an end.</li>
+  </ul>
+
+  <h2 id="big-ideas">The big ideas of season 1</h2>
+  <p>Read the season in order and several arguments run through it. Some sharpen from episode to episode, and some are turned around before the season ends.</p>
+
+  <h3>1. An agent is very little code</h3>
+  <p>The first claim is the one that never changes. Episode 1 finds the wiring between model and tools <a class="lnk" href="https://youtu.be/auVu08nXKOw?t=393" target="_blank" rel="noopener">took two weeks</a>, and the April note lays out the whole loop in under 400 lines of Go. Episode 5 is frustrated that people still look for the <a class="lnk" href="https://youtu.be/M8kZLuukZgk?t=184" target="_blank" rel="noopener">secret ingredient</a>. The conclusion grows stronger over time. In February 2026 Amp's own post said the harness was <a class="lnk" href="https://ampcode.com/news/the-coding-agent-is-dead" target="_blank" rel="noopener">no longer the limiting factor at all</a>, and that how you organize your codebase and your team had become the bottleneck. If the agent is cheap to build, a product can't win on the agent alone. It has to win on its taste in tools and on how far ahead it runs.</p>
+
+  <h3>2. Feedback, then a codebase built for agents</h3>
+  <p>Giving the agent the right feedback at the right time (<a class="lnk" href="https://youtu.be/auVu08nXKOw?t=643" target="_blank" rel="noopener">E1</a>) becomes &ldquo;is it actually doing the build?&rdquo; (<a class="lnk" href="https://youtu.be/M8kZLuukZgk?t=1907" target="_blank" rel="noopener">E5</a>), then &ldquo;weld the agent to the codebase&rdquo; (<a class="lnk" href="https://youtu.be/2wjnV6F2arc?t=680" target="_blank" rel="noopener">E9</a>), and finally the charge that a human in the sidebar is <a class="lnk" href="https://youtu.be/4rx36wc9ugw?t=1450" target="_blank" rel="noopener">acting as the feedback loop</a> (E10). The prediction that codebases will <a class="lnk" href="https://youtu.be/N04FM1e3sbY?t=1346" target="_blank" rel="noopener">bend to the agents</a> (E3) turned out to be about their own repo. By E10 they say they are willing to make the editor worse for humans to get a faster check for agents (<a class="lnk" href="https://youtu.be/4rx36wc9ugw?t=1112" target="_blank" rel="noopener">18:32</a>). Thorsten wrote about a smaller case of the same thing three days after E10 came out. In <a class="lnk" href="https://registerspill.thorstenball.com/p/joy-and-curiosity-73" target="_blank" rel="noopener">Joy &amp; Curiosity #73</a> he dropped his objection to UUIDs, because agents will read far more of them than he will.</p>
+
+  <h3>3. Don't ration tokens</h3>
+  <p>E2's &ldquo;<a class="lnk" href="https://youtu.be/4N814ziAn4o?t=745" target="_blank" rel="noopener">magic of the no token limit</a>&rdquo; is a claim about product design, and only secondarily about price. An agent becomes autonomous by being allowed to retry, so a product built to save requests will be a worse agent. That is the root of E2's <a class="lnk" href="https://youtu.be/4N814ziAn4o?t=714" target="_blank" rel="noopener">prediction against flat-rate subscriptions</a>. E9 repeats it as a refusal: a subscription that hands out more tokens than it costs either needs your own model or ends in a <a class="lnk" href="https://youtu.be/2wjnV6F2arc?t=2060" target="_blank" rel="noopener">rug pull</a>. The hedge was there from the start. Amp subsidised usage with a <a class="lnk" href="https://ampcode.com/news/amp-free-frontier" target="_blank" rel="noopener">$10-a-day grant</a> in January 2026, and E9 says that if a subscription that really pays for itself ever appears, they would offer it. In October 2026, after the season, Amp began letting people <a class="lnk" href="https://ampcode.com/news/use-your-claude-plan" target="_blank" rel="noopener">use their Claude plan</a> inside it.</p>
+
+  <h3>4. The conversation is the record, and review has to change</h3>
+  <p>Thread sharing started as a debugging convenience and became an argument about history. A commit message captures a fraction of why code exists; the thread shows how the problem was cut up and what the human insisted on (<a class="lnk" href="https://youtu.be/N04FM1e3sbY?t=768" target="_blank" rel="noopener">E3</a>, <a class="lnk" href="https://youtu.be/2ITBH4dIfWY?t=1294" target="_blank" rel="noopener">E4</a>). If ten times more code is written, human review can't keep up (<a class="lnk" href="https://youtu.be/M8kZLuukZgk?t=3648" target="_blank" rel="noopener">E5</a>). By E9 the team pushes to main and trusts a senior engineer who reviewed the agent's work (<a class="lnk" href="https://youtu.be/2wjnV6F2arc?t=1847" target="_blank" rel="noopener">30:47</a>), and ticket and pull-request rituals are treated as bottlenecks left over from human authorship (<a class="lnk" href="https://youtu.be/2wjnV6F2arc?t=1696" target="_blank" rel="noopener">28:16</a>).</p>
+
+  <h3>5. The context window, subagents and the oracle</h3>
+  <p>The constraint they kept running into was the context window. Thorsten gave the search agent its own window because, in his words, the context window is sacred (<a class="lnk" href="https://youtu.be/N04FM1e3sbY?t=1900" target="_blank" rel="noopener">E3</a>). Generic sub-agents (<a class="lnk" href="https://youtu.be/HVihMH5j8KQ?t=835" target="_blank" rel="noopener">E6</a>, <a class="lnk" href="https://ampcode.com/notes/agents-for-the-agent" target="_blank" rel="noopener">Agents for the Agent</a>) and the intern analogy (<a class="lnk" href="https://youtu.be/p8a0PePNWlA?t=2167" target="_blank" rel="noopener">E7</a>) follow from it. The oracle then turned the no-model-selector rule into several models, each behind a named sub-agent (<a class="lnk" href="https://youtu.be/p8a0PePNWlA?t=2937" target="_blank" rel="noopener">E7</a>, <a class="lnk" href="https://youtu.be/doTI08ukee0?t=1304" target="_blank" rel="noopener">E8</a>). This thread is where the biggest reversal happened. In E7, careful manual context management was the skill to learn, and in October 2025 Amp replaced compaction with <a class="lnk" href="https://ampcode.com/news/handoff" target="_blank" rel="noopener">handoff</a>. In E10 Thorsten says manual context management is <a class="lnk" href="https://youtu.be/4rx36wc9ugw?t=2647" target="_blank" rel="noopener">coming to an end</a>, and that he had said for a long time that auto-compaction doesn't work.</p>
+
+  <h3>6. One opinion instead of a menu: from model picker to modes</h3>
+  <p>&ldquo;No model selector&rdquo; is there from <a class="lnk" href="https://youtu.be/auVu08nXKOw?t=1319" target="_blank" rel="noopener">E1</a> to the E9 Q&amp;A, but what it means changes. In E5 it is a bet on one model's tool habits, the grain of the model. By E5's end it has become choosing <a class="lnk" href="https://youtu.be/M8kZLuukZgk?t=3254" target="_blank" rel="noopener">an agent rather than a model</a>, and E8 describes a lineup with a different model in each slot (<a class="lnk" href="https://youtu.be/doTI08ukee0?t=63" target="_blank" rel="noopener">01:03</a>). In E10 the unit is a mode, rush, smart or deep, each with its own model and tools (<a class="lnk" href="https://youtu.be/4rx36wc9ugw?t=94" target="_blank" rel="noopener">01:34</a>). Thorsten wishes switching modes made the whole app look and feel different, so people stop treating deep as a drop-in model.</p>
+
+  <h3>7. The sidebar dies: from power tool to factory</h3>
+  <p>In E5 the agent is a <a class="lnk" href="https://youtu.be/M8kZLuukZgk?t=675" target="_blank" rel="noopener">power drill</a> and the editor is already <a class="lnk" href="https://youtu.be/M8kZLuukZgk?t=3498" target="_blank" rel="noopener">mostly a diff viewer</a>. E6's background agents fed by CI (<a class="lnk" href="https://youtu.be/HVihMH5j8KQ?t=1569" target="_blank" rel="noopener">26:09</a>) are the first step away from the editor. E9 names where it leads (<a class="lnk" href="https://youtu.be/2wjnV6F2arc?t=1540" target="_blank" rel="noopener">25:40</a>): agents writing code is a given, so the work is building a codebase and a pipeline that agents can be fed into from anywhere. E10 draws the product conclusion and <a class="lnk" href="https://youtu.be/4rx36wc9ugw?t=1330" target="_blank" rel="noopener">kills the sidebar</a>, with Thorsten saying plainly that <a class="lnk" href="https://youtu.be/4rx36wc9ugw?t=525" target="_blank" rel="noopener">his view changed</a>. Season 2 (page 07) starts from there.</p>
+
+  <div class="callout">Next: <a class="lnk" href="p07.html">Raising an Agent, Season 2</a> &middot; Back to <a class="lnk" href="../index.html#podcast">the map</a>.</div>
+</main>
+<footer>Original explanation of Thorsten Ball's public work, page 06 of 10. Summaries and framing are ours; quotes are his and link to the source. Part of <a href="../index.html">the Thorsten Ball field map</a>.</footer>
+<!-- Private comments mode, inert unless ?annotate=1 (see assets/annotate.js in idvorkin-ai-tools.github.io) -->
+<script src="https://idvorkin-ai-tools.github.io/assets/annotate.js" defer></script>
+</body>
+</html>
