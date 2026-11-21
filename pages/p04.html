@@ -85,7 +85,7 @@
       <text class="t-ink" x="685" y="208" text-anchor="middle" font-size="14">executeTool</text>
       <text class="t-def" x="685" y="228" text-anchor="middle" font-size="11">find by name, run Go func</text>
       <line class="ln-def" x1="700" y1="114" x2="700" y2="179"/><polygon class="ah-def" points="700,180 695,172 705,172"/>
-      <text class="t-def" x="708" y="152" font-size="11">tool_use (id, name, input)</text>
+      <text class="t-def" x="694" y="152" text-anchor="end" font-size="11">tool_use (id, name, input)</text>
 
       <rect class="box-def" x="320" y="180" width="230" height="64" rx="10"/>
       <text class="t-ink" x="435" y="208" text-anchor="middle" font-size="14">tool_result blocks</text>
@@ -119,12 +119,12 @@
 
   <h2 id="line-counts">How little code it is</h2>
   <p>The note is written to make you feel the size of the program, so it reports a running count rather than a final figure:</p>
-  <table class="kv">
+  <div class="scroll"><table class="kv">
     <tr><td>Promise at the start</td><td>"less than 400 lines of code, most of which is boilerplate"</td></tr>
     <tr><td>Chat loop working</td><td>90 lines</td></tr>
     <tr><td>After <span class="mono">read_file</span> and <span class="mono">list_files</span></td><td>"around 190 lines"</td></tr>
     <tr><td>Closing line</td><td>"300 lines of code and three tools"</td></tr>
-  </table>
+  </table></div>
   <p>The figures don't quite agree (under 400 at the top, 300 at the end), and in May he described it in <a class="lnk" href="https://registerspill.thorstenball.com/p/joy-and-curiosity-40" target="_blank" rel="noopener">Joy &amp; Curiosity #40</a> as "around 300 lines of Go". Either way the scale is a few hundred lines, mostly Go error handling and SDK type plumbing. The same newsletter item points to Philip Zeyliger's <a class="lnk" href="https://sketch.dev/blog/agent-loop" target="_blank" rel="noopener">The Unreasonable Effectiveness of an LLM Agent Loop with Tool Use</a>, which gets the idea down to nine lines of pseudocode, and Thorsten recommends it.</p>
 
   <h2 id="emperor">Why the emperor has no clothes</h2>
