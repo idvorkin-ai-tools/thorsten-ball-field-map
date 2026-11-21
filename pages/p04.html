@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>How to Build an Agent: an LLM, a loop, and enough tokens &mdash; Thorsten Ball, mapped</title>
+<meta name="description" content="What Thorsten Ball's April 2025 Amp note How to Build an Agent actually builds: a Go chat loop, three tools, and a tool-call round trip that turns a chatbot into a code-editing agent in a few hundred lines, and why that was the point." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../paper.css" />
+</head>
+<body>
+<header class="bar"><div class="bar-in">
+  <div class="brand"><span class="dot"></span>THORSTEN&nbsp;//&nbsp;FIELD&nbsp;MAP</div>
+  <a class="back" href="../index.html#agents">&larr; the map</a>
+</div></header>
+<main>
+  <div class="eyebrow"><span class="box wb mono">BUILDING AGENTS &middot; PAGE 04 OF 10</span><span class="mono">chat loop &middot; tool calls &middot; read_file, list_files, edit_file</span></div>
+  <h1>How to Build an Agent: an LLM, a loop, and enough tokens</h1>
+  <div class="authors">The Amp note from April 15, 2025 that turned a terminal chatbot into a code-editing agent in a few hundred lines of Go, and the argument it was written to make.</div>
+  <div class="paperlink" style="border-left-color:var(--off)"><span class="lbl">Source</span><a href="https://ampcode.com/notes/how-to-build-an-agent" target="_blank" rel="noopener">How to Build an Agent, or: The Emperor Has No Clothes (Amp note, April 15, 2025) &#8599;</a></div>
+  <div class="tldr"><b>TL;DR &mdash;</b> The note builds a working coding agent from scratch: a terminal chat loop against Claude 3.7 Sonnet, a four-field tool definition, and three tools (<span class="mono">read_file</span>, <span class="mono">list_files</span>, <span class="mono">edit_file</span>). The whole trick is one extra branch in the loop: when the model's reply contains a <span class="mono">tool_use</span> block, run the function locally, send the output back as a <span class="mono">tool_result</span>, and call the model again without asking the user. Thorsten's claim is that this small core is all an agent is, and that everything a product like Amp adds on top is ordinary engineering.</div>
+
+  <p class="lead">Thorsten wrote the note for engineers who assumed coding agents hide some clever secret, and he asks them to type out every line so they see for themselves that they don't.</p>
+
+  <h2 id="claim">The claim, stated up front</h2>
+  <p>The subtitle gives away the argument before any code appears. Watching an agent edit files and recover from errors, you assume there is a secret. Thorsten's answer is three nouns:</p>
+  <blockquote class="q off">There isn’t. It’s an LLM, a loop, and enough tokens.<span class="cite">&mdash; <a href="https://ampcode.com/notes/how-to-build-an-agent" target="_blank" rel="noopener">Thorsten Ball, How to Build an Agent</a></span></blockquote>
+  <p>He defines an agent narrowly. The model has to be able to change something outside its own context window, and tools are how it does that. A model that only talks is a chatbot. The note links that definition to an earlier interview, <a class="lnk" href="https://youtu.be/J1-W9O3n7j8?t=72" target="_blank" rel="noopener">Agents At Work 4</a> from February 2025, so he had been using it before he wrote any of this down:</p>
+  <blockquote class="q">an LLM with access to tools, giving it the ability to modify something outside the context window.<span class="cite">&mdash; <a href="https://ampcode.com/notes/how-to-build-an-agent" target="_blank" rel="noopener">Thorsten Ball, How to Build an Agent</a></span></blockquote>
+  <p>The setup is deliberately bare: Go, an <span class="mono">ANTHROPIC_API_KEY</span> environment variable, the official <a class="lnk" href="https://github.com/anthropics/anthropic-sdk-go" target="_blank" rel="noopener">anthropic-sdk-go</a>, and later <a class="lnk" href="https://github.com/invopop/jsonschema" target="_blank" rel="noopener">invopop/jsonschema</a> for generating tool schemas. There is no framework and no system prompt. The model constant in the code is <span class="mono">ModelClaude3_7SonnetLatest</span> with a 1024-token response cap.</p>
+
+  <h2 id="chat-loop">Stage one: a chat loop, and who keeps the state</h2>
+  <p>The first program is a REPL (read, evaluate, print, loop). Read a line from stdin, wrap it as a user message, append it to a slice called <span class="mono">conversation</span>, call the Messages API with the whole slice, append the reply, print any text blocks, repeat. The note puts this at 90 lines.</p>
+  <p>The point of this stage is to make you notice where the memory lives. The model remembers your name on turn three only because your program sent turns one and two again. The API is stateless, so the client owns the transcript and pays to resend all of it on every call. Every later feature hangs off that slice. Tool calls and their results become more entries in it, and the model sees its own earlier actions only because you replay them.</p>
+  <p>Before writing any tool code he shows that tool use is a convention the model already follows. In plain chat he tells Claude to answer weather questions with <span class="mono">get_weather(&lt;location_name&gt;)</span>, asks about Munich, gets back exactly that string, types in a fake forecast, and Claude carries on as if it had looked something up. The provider APIs formalise this. You send a list of tool definitions, the provider turns them into prompt text the model was trained on, and the model answers in a structured shape when it wants one called. Anthropic documents the wrapping in its <a class="lnk" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview" target="_blank" rel="noopener">tool-use overview</a>, which the note links.</p>
+
+  <h2 id="tool-definition">Stage two: what a tool is, in four fields</h2>
+  <p>Each tool is a name, a description, a JSON schema for its input, and a Go function that does the work. The first three go to the model. The function stays on your machine.</p>
+<pre class="code-block">type ToolDefinition struct {
+	Name        string                         `json:"name"`
+	Description string                         `json:"description"`
+	InputSchema anthropic.ToolInputSchemaParam `json:"input_schema"`
+	Function    func(input json.RawMessage) (string, error)
+}</pre>
+  <p>That split carries the design. The description and schema are the tool's only interface to the model, so they are prompt engineering under another name. The <span class="mono">read_file</span> description says what it returns and also when not to use it ("Do not use this with directory names"). The function is ordinary code with no awareness of AI: <span class="mono">read_file</span> unmarshals a path and calls <span class="mono">os.ReadFile</span>. A small generic helper reflects a Go struct into the JSON schema, so the struct tags double as per-parameter descriptions.</p>
+
+  <h2 id="round-trip">Stage three: the round trip</h2>
+  <p>With the first tool registered but the loop unchanged, asking "what's in main.go?" gets a reply announcing that Claude will read the file, then nothing. The model asked for a tool and the program dropped the request. The fix is a rewrite of <span class="mono">Run()</span>, and this is the core of it:</p>
+<pre class="code-block">		case "tool_use":
+			result := a.executeTool(content.ID, content.Name, content.Input)
+			toolResults = append(toolResults, result)
+		}
+	}
+	if len(toolResults) == 0 {
+		readUserInput = true
+		continue
+	}
+	readUserInput = false
+	conversation = append(conversation, anthropic.NewUserMessage(toolResults...))</pre>
+  <p>Here is what happens on the wire. The model's reply is a list of content blocks. A text block is printed. A <span class="mono">tool_use</span> block carries an id, a tool name and a JSON input. <span class="mono">executeTool</span> looks the name up in the local registry, runs the function, and wraps the output in a <span class="mono">tool_result</span> block that points back to the same id. Errors go back as well, with an error flag set, so the model can see that a call failed and try something else. All the results from one turn are bundled into a single message with the user role and appended to the conversation.</p>
+  <p>Then comes the <span class="mono">readUserInput</span> flag. If the model asked for tools, the loop skips the "You:" prompt and calls the model again straight away with the results in context. If the reply was text only, control goes back to the human. That one boolean is the difference between a chatbot and an agent: the model can take several steps in a row while the human waits. The note admits this means a loop inside a loop and doesn't apologise for it.</p>
+
+  <figure class="fig wide"><div class="media">
+    <svg class="dg" viewBox="0 0 820 380" role="img" aria-label="The agent loop from How to Build an Agent: user input goes into the conversation, the model replies, tool_use blocks are executed locally and returned as tool_result blocks, and the model is called again until it replies with text only">
+      <title>The agent loop: the model keeps getting called while it asks for tools</title>
+      <rect class="box" x="20" y="50" width="150" height="64" rx="10"/>
+      <text class="t-ink" x="95" y="78" text-anchor="middle" font-size="14">You type</text>
+      <text class="t-dim" x="95" y="98" text-anchor="middle" font-size="11">getUserMessage()</text>
+      <rect class="box" x="210" y="50" width="180" height="64" rx="10"/>
+      <text class="t-ink" x="300" y="78" text-anchor="middle" font-size="14">conversation</text>
+      <text class="t-dim" x="300" y="98" text-anchor="middle" font-size="11">append, resend it all</text>
+      <rect class="box-off" x="430" y="50" width="180" height="64" rx="10"/>
+      <text class="t-ink" x="520" y="78" text-anchor="middle" font-size="14">Claude</text>
+      <text class="t-off" x="520" y="98" text-anchor="middle" font-size="11">runInference + tools</text>
+      <rect class="box" x="650" y="50" width="140" height="64" rx="10"/>
+      <text class="t-ink" x="720" y="78" text-anchor="middle" font-size="14">reply blocks</text>
+      <text class="t-dim" x="720" y="98" text-anchor="middle" font-size="11">text? tool_use?</text>
+      <line class="ln" x1="170" y1="82" x2="209" y2="82"/><polygon class="ah" points="210,82 202,77 202,87"/>
+      <line class="ln" x1="390" y1="82" x2="429" y2="82"/><polygon class="ah" points="430,82 422,77 422,87"/>
+      <line class="ln" x1="610" y1="82" x2="649" y2="82"/><polygon class="ah" points="650,82 642,77 642,87"/>
+
+      <rect class="box-def" x="590" y="180" width="190" height="64" rx="10"/>
+      <text class="t-ink" x="685" y="208" text-anchor="middle" font-size="14">executeTool</text>
+      <text class="t-def" x="685" y="228" text-anchor="middle" font-size="11">find by name, run Go func</text>
+      <line class="ln-def" x1="700" y1="114" x2="700" y2="179"/><polygon class="ah-def" points="700,180 695,172 705,172"/>
+      <text class="t-def" x="708" y="152" font-size="11">tool_use (id, name, input)</text>
+
+      <rect class="box-def" x="320" y="180" width="230" height="64" rx="10"/>
+      <text class="t-ink" x="435" y="208" text-anchor="middle" font-size="14">tool_result blocks</text>
+      <text class="t-def" x="435" y="228" text-anchor="middle" font-size="11">same id, output or error flag</text>
+      <line class="ln-def" x1="590" y1="212" x2="551" y2="212"/><polygon class="ah-def" points="550,212 558,207 558,217"/>
+      <line class="ln-def" x1="480" y1="180" x2="480" y2="115"/><polygon class="ah-def" points="480,114 475,122 485,122"/>
+      <text class="t-def" x="330" y="152" font-size="11">readUserInput = false</text>
+      <text class="t-def" x="330" y="166" font-size="11">call the model again</text>
+
+      <line class="ln" x1="790" y1="100" x2="806" y2="100"/>
+      <line class="ln" x1="806" y1="100" x2="806" y2="320"/>
+      <line class="ln" x1="806" y1="320" x2="271" y2="320"/><polygon class="ah" points="270,320 278,315 278,325"/>
+      <text class="t-dim" x="520" y="312" text-anchor="middle" font-size="11">text only, no tool_use</text>
+
+      <rect class="box" x="20" y="290" width="250" height="64" rx="10"/>
+      <text class="t-ink" x="145" y="318" text-anchor="middle" font-size="14">print Claude's text</text>
+      <text class="t-dim" x="145" y="338" text-anchor="middle" font-size="11">readUserInput = true</text>
+      <line class="ln" x1="95" y1="290" x2="95" y2="115"/><polygon class="ah" points="95,114 90,122 100,122"/>
+      <text class="t-dim" x="105" y="210" font-size="11">back to the human</text>
+    </svg>
+  </div>
+  <figcaption>Our drawing of the <span class="mono">Run()</span> loop in the note. Amber is the only remote call; green runs on your machine. The model keeps going round the green loop until a reply has no <span class="mono">tool_use</span> block in it.</figcaption></figure>
+
+  <h2 id="three-tools">The three tools, and what they show</h2>
+  <p><b><span class="mono">read_file</span></b> proves the round trip. With a riddle saved in <span class="mono">secret-file.txt</span>, the request "help me solve the riddle in the secret-file.txt file" makes Claude call <span class="mono">read_file</span> and answer. No instruction said "when the user mentions a file, read it". The description alone was enough.</p>
+  <blockquote class="q">You just give it a tool and it… uses it when it thinks it’ll help solve the task.<span class="cite">&mdash; <a href="https://ampcode.com/notes/how-to-build-an-agent" target="_blank" rel="noopener">Thorsten Ball, How to Build an Agent</a></span></blockquote>
+  <p><b><span class="mono">list_files</span></b> walks a directory and returns a JSON array of relative paths, with directories marked by a trailing slash. It shows composition. Asked which Go version the project uses, Claude lists the directory, picks <span class="mono">go.mod</span>, reads it and answers, chaining two tools across two model calls with nobody prompting it in between. Thorsten uses this tool to make a point about output design. The trailing slash was his own choice, and any format works if the model can make sense of it, at an acceptable token cost:</p>
+  <blockquote class="q">There’s no fixed format. Anything goes as long as Claude can make sense of it and whether it can you need to figure out by experimentation.<span class="cite">&mdash; <a href="https://ampcode.com/notes/how-to-build-an-agent" target="_blank" rel="noopener">Thorsten Ball, How to Build an Agent</a></span></blockquote>
+  <p><b><span class="mono">edit_file</span></b> is the one readers expect to be hard. It is string replacement: a path, an <span class="mono">old_str</span>, a <span class="mono">new_str</span>. An empty <span class="mono">old_str</span> on a missing file creates the file, which a small helper handles. He picked the interface because Claude 3.7 handles string replacement well, and he adds that you only find out what a model is good at by trying. Given that tool, Claude writes a runnable <span class="mono">fizzbuzz.js</span>, then reads it back and makes two edits to cut it to 15, changing the comment at the top to match without being asked. It also writes a <span class="mono">congrats.js</span> that ROT13-decodes the string the note gives it, and the decoded output congratulates you on building a code-editing agent.</p>
+  <p>One detail a careful reader will spot (our observation, not the note's): the schema tells the model that <span class="mono">old_str</span> must match exactly once, but the implementation calls <span class="mono">strings.Replace(..., -1)</span>, which replaces every match. The model is told about a constraint the code does not enforce. That is the kind of gap Thorsten's "elbow grease" covers in a real product.</p>
+
+  <h2 id="line-counts">How little code it is</h2>
+  <p>The note is written to make you feel the size of the program, so it reports a running count rather than a final figure:</p>
+  <table class="kv">
+    <tr><td>Promise at the start</td><td>"less than 400 lines of code, most of which is boilerplate"</td></tr>
+    <tr><td>Chat loop working</td><td>90 lines</td></tr>
+    <tr><td>After <span class="mono">read_file</span> and <span class="mono">list_files</span></td><td>"around 190 lines"</td></tr>
+    <tr><td>Closing line</td><td>"300 lines of code and three tools"</td></tr>
+  </table>
+  <p>The figures don't quite agree (under 400 at the top, 300 at the end), and in May he described it in <a class="lnk" href="https://registerspill.thorstenball.com/p/joy-and-curiosity-40" target="_blank" rel="noopener">Joy &amp; Curiosity #40</a> as "around 300 lines of Go". Either way the scale is a few hundred lines, mostly Go error handling and SDK type plumbing. The same newsletter item points to Philip Zeyliger's <a class="lnk" href="https://sketch.dev/blog/agent-loop" target="_blank" rel="noopener">The Unreasonable Effectiveness of an LLM Agent Loop with Tool Use</a>, which gets the idea down to nine lines of pseudocode, and Thorsten recommends it.</p>
+
+  <h2 id="emperor">Why the emperor has no clothes</h2>
+  <p>The subtitle carries the thesis. Most of what makes an agent impressive comes from the model. The harness around it is a short loop that any competent engineer can write in an afternoon. The note ends by listing what Amp adds on top: editor integration, a tuned system prompt, the right feedback at the right time, a UI, better tooling around the tools, multiple agents. He calls all of it "practical engineering and elbow grease" with no moments of genius.</p>
+  <p>That cuts two ways, and he means both. For people sizing up agent products, the loop is not a moat, so judge them on the polish, the tools and the feedback, and expect a lot of capability to come from the model whoever built the wrapper. For engineers, the barrier to building your own is gone, and he wants you to find that out by doing it rather than by taking his word for it. That is why he keeps insisting you type the code. The note's last line is "That’s why we think everything’s changing."</p>
+  <p>The reaction surprised him. In <a class="lnk" href="https://registerspill.thorstenball.com/p/joy-and-curiosity-36" target="_blank" rel="noopener">Joy &amp; Curiosity #36</a>, published five days later, he reports nearly 1M views and thousands of likes, and calls the reactions the biggest surprise of the week. A tutorial that mostly says "this is easy" landed because most readers had been waiting for the catch the note never delivers.</p>
+
+  <h2 id="podcast">What the podcast had already said</h2>
+  <p>The note says this is "what we’ve been saying on the podcast" from the start, and the first episode of <a class="lnk" href="https://ampcode.com/podcast/episode-1" target="_blank" rel="noopener">Raising an Agent</a> (March 6, 2025, about six weeks earlier) shows that it was. At <a class="lnk" href="https://youtu.be/auVu08nXKOw?t=393" target="_blank" rel="noopener">6:33</a> the hosts break an agent into three pieces: the tools, the model, and the wiring that joins them. <a class="lnk" href="https://youtu.be/auVu08nXKOw?t=423" target="_blank" rel="noopener">The answer</a> is that the wiring is the easy part, since they reached a working prototype in roughly two weeks. <a class="lnk" href="https://youtu.be/auVu08nXKOw?t=456" target="_blank" rel="noopener">Right after</a>, one of them describes being surprised that once you give Claude some tools there is little else to do. The example is an edit call that failed twice, after which the model wrote the content to a new file and moved it over the old one with a terminal command. That prototype had a terminal tool and a system prompt. The note's agent has neither, which is how it shows that the minimum is smaller still.</p>
+  <p>The episode also names what the minimal version leaves out. <a class="lnk" href="https://youtu.be/auVu08nXKOw?t=643" target="_blank" rel="noopener">At 10:43</a>, past "the tools of course, the model of course", the hosts single out giving the agent the right feedback at the right time, such as compiler errors, test results and diagnostics, as the part that has to be got right. The same phrase turns up in the note's list of things Amp adds on top. The note and the podcast make one argument: the loop is trivial, and the quality lives in what you feed back into it.</p>
+  <p>Five months after the note, Quinn and Thorsten took the same framing onto Latent Space. The episode is titled <a class="lnk" href="https://www.youtube.com/watch?v=b4rOVZWLW6E" target="_blank" rel="noopener">Amp: The Emperor Has No Clothes</a> and is listed on <a class="lnk" href="https://thorstenball.com/podcasts/" target="_blank" rel="noopener">his podcasts page</a> under 25 Sep 2025. The title reuses the note's subtitle, so by then the phrase had become a shorthand for Amp's whole position.</p>
+
+  <h2 id="repo">Is there a companion repo?</h2>
+  <p>We found no official repository of the Go code under <a class="lnk" href="https://github.com/mrnugget" target="_blank" rel="noopener">github.com/mrnugget</a> or <a class="lnk" href="https://github.com/ampcode" target="_blank" rel="noopener">github.com/ampcode</a> as of November 2026, and the note itself links none. That fits its insistence that you type the code yourself. The nearest thing he published is <a class="lnk" href="https://github.com/mrnugget/agent-openai-gpt-oss-20b" target="_blank" rel="noopener">agent-openai-gpt-oss-20b</a>, a small Rust agent for OpenAI's open-weight gpt-oss-20b running locally, whose README says it is based on How to Build an Agent. In <a class="lnk" href="https://registerspill.thorstenball.com/p/joy-and-curiosity-49" target="_blank" rel="noopener">Joy &amp; Curiosity #49</a> (August 2025) he says Amp wrote it from the post and he didn't write a line by hand. That makes a neat test of the thesis: an agent rebuilt a working copy of the minimal agent from its own tutorial.</p>
+
+  <h2 id="try-it">Try it</h2>
+  <ul class="outline">
+    <li><b>Build the chat loop and test the statelessness.</b> Create a Go module, add <span class="mono">anthropic-sdk-go</span>, write <span class="mono">Run()</span> and <span class="mono">runInference()</span> from the note, and talk to it. Then print <span class="mono">len(conversation)</span> each turn, or restart the program, and watch the memory disappear. If the SDK has moved on since April 2025, swap in a current model constant.</li>
+    <li><b>Add <span class="mono">read_file</span> with the old loop first.</b> Register the tool but keep the stage-one <span class="mono">Run()</span>, ask what is in a file, and see Claude announce a read that never happens. Then add the <span class="mono">tool_use</span> branch and the <span class="mono">readUserInput</span> flag. The difference between those two runs is the whole lesson.</li>
+    <li><b>Add <span class="mono">list_files</span> and <span class="mono">edit_file</span>, then ask for a multi-step task.</b> "Create fizzbuzz.js and make it run with Node" or "what Go version is this project on?" Count the model calls per human turn: that count is the agent working on its own.</li>
+    <li><b>Find your own elbow grease.</b> Make <span class="mono">edit_file</span> reject an <span class="mono">old_str</span> that matches more than once, return a useful error, and watch the model recover. Or add a tool that runs a command and feeds back compiler output, which is the feedback the podcast says matters most.</li>
+  </ul>
+
+  <div class="callout">Next: <a class="lnk" href="p05.html">His agentic-coding writing</a> &middot; Back to <a class="lnk" href="../index.html#agents">the map</a>.</div>
+</main>
+<footer>Original explanation of Thorsten Ball's public work, page 04 of 10. Summaries and framing are ours; quotes are his and link to the source. Part of <a href="../index.html">the Thorsten Ball field map</a>.</footer>
+<!-- Private comments mode, inert unless ?annotate=1 (see assets/annotate.js in idvorkin-ai-tools.github.io) -->
+<script src="https://idvorkin-ai-tools.github.io/assets/annotate.js" defer></script>
+</body>
+</html>
